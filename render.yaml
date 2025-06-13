@@ -9,8 +9,6 @@ services:
       pip install -r requirements.txt
     startCommand: cd backend && python server.py
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.9
       - key: OPENAI_API_KEY
         sync: false
       - key: HEYGEN_API_KEY
@@ -20,4 +18,4 @@ services:
       - key: SECRET_KEY
         sync: false
       - key: DATABASE_URL
-        sync: false 
+        sync: false
