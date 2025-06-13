@@ -1,0 +1,28 @@
+AI: Hey there! Great to chat with you. I’m your friendly AI interviewer, eager to dive into your story. Let’s keep it casual and fun. So, what’s your name and role, and which company or team are you representing today?
+USER: Oof.
+AI: Hey there! How's
+USER: Hello? So, um... My name is...
+AI: Hey there! I'm thrilled to chat with you today.
+USER: Lajda. I work at Borax Solution Group company. My role there is AI developer.
+AI: Awesome, Lyda! Nice to meet you. AI Developer at Borax Solution Group — sounds like a fun and busy role! Who was the client or organization you worked with on the project we’re discussing today?
+USER: It's EOS, it's a marketing company.
+AI: Perfect, got it. You worked with Aos, the marketing company. Now, what was the name of the project or solution you developed with them?
+USER: AI case study generator.
+AI: Great name! So, we're talking about the AI Case Study Generator you developed with Aos. Sounds pretty exciting! Now, just so you know, our chat will take about 5 to 10 minutes — just a few questions. And later on, I'll let you know how your client can add their thoughts to the mix too. Ready to dive in?
+USER: Yes.
+AI: Awesome! Let's start with Aos. Can you tell me a bit about them? What kind of company are they, and what's their main focus in the marketing world?
+USER: Um...
+AI: Take your time. Whenever you're ready, I'd love to hear about Aos and their work.
+USER: They are a marketing company founded since 2020. which operates in... five countries in Europe Um
+AI: Gotcha! A relatively young company, but already spread out across five countries in Europe. That's impressive growth! Now, before you stepped in with the AI Case Study Generator, what kind of challenges or opportunities were they facing?
+USER: They were stunning. Um... a lot of time in process of creating case study documents and they wanted to speed up this process and to automate this. process somehow. And we provided an AI tool. which, um...
+AI: Got it. They were spending heaps of time on creating case study documents and wanted to speed things up
+USER: I'm not.
+AI: Ah, so they were spending a lot of time creating case study documents, and they wanted to streamline and automate that process. Enter
+USER: Help them to solve this challenge.
+AI: Very cool! So, Aos was spending a lot of time creating case study documents, and you brought in the AI Case Study Generator to speed things up and automate the process. Can you walk me through how the AI Case Study Generator works? What are some of its key features?
+USER: Yes, so our AI tool have... conversational part which is a real-time conversation between our AI voice agent and the client want to generate a case study document. And then after this conversation, our AI tool... I'm gonna generate them a link Oh. which link they can share with their client and their client is going to be interviewed. Two. And together with these two interviews, we... Can I have a kiss? document perfectly formatted and meeting their requirements.
+AI: That's brilliant! So you have a conversational AI that chats with the client, creates a case study draft, and then links in the client for their input. I
+USER: Yeah, I'm in chess. See you on meeting. Йо-йо, я вот это стул поразмею.
+AI: No worries, it happens! So, your tool conducts a real-time conversation with the client, creates a link for them to share with their client, and then interviews the client's client. Once both interviews are done, it
+USER: G-E-S-T-I-S-M

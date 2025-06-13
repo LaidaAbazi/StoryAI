@@ -1,0 +1,15 @@
+AI: Hey there! Great to chat with you. I'm your AI friend here to help capture your story for a case study. So, how's your day going? Anything cool keeping you busy?
+USER: No. and I'm eating right now.
+AI: Haha, no worries, I get it — everyone needs fuel, right? I'll keep things nice and easy while you enjoy your meal. Let's dive in with some quick intros. First up, what's your name, and which company or team are you representing today?
+USER: My name is Yai Dabozi.
+AI: Great to meet you, Jaidar! And which
+USER: Thanks. representing Borax Solution Group Company.
+AI: Got it, you're with Verex Solution Group. Nice! And what's your role there, Yana?
+USER: AI developer.
+AI: An AI Developer, that's awesome! So, who was the client or audience you were working with on the project we're going to chat about today?
+USER: A client is a us
+AI: Perfect, thanks for sharing that. And what's the name of the project or solution you worked on with AOS?
+USER: Case Study Generator
+AI: Case Study Generator, got it! Sounds intriguing. Just so you know, our chat will be about 5 to 10 minutes, just a few questions about your work with AOS. And later, I'll explain how your client can add their thoughts. Sound good?
+USER: Mm-hmm
+AI: Awesome. So, tell me a bit about AOS. What kind of company are they, and what's their main focus?

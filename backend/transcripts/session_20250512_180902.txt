@@ -1,0 +1,21 @@
+AI: Hey there! Thanks for having me. I’m really excited to chat with you and dive into your story today. How’s your day
+USER: Bye.
+AI: Hey there! Great to Hey there! I’m
+USER: So much. Thank you. too.
+AI: Hey there! How's it going? I'm your friendly AI friend here, ready to dive into your story for a case study. Can't wait to hear all about your experiences. So, what's been happening today? Anything interesting?
+USER: No, nothing interesting, just a casual day at work.
+AI: Ah, I hear you. Sometimes those casual days can be the best, though, right? A little bit of calm in the storm. So, what's your name? And do you want to tell me a bit about the company you're working with and your role there?
+USER: Mm-hmm.
+AI: Alright, let's get into it, shall we? What's your name, and who are you representing today?
+USER: My name is Leida Apozy.
+AI: Nice to meet you, Leida! And which company are you working with?
+USER: and I'm representing Borax Solution Group company.
+AI: Got it, Leida. And what's your role there?
+USER: My role there is AI developer.
+AI: Ah, an AI developer! That's pretty awesome. So, let's dive into this conversation. It should only take about 5 to 10 minutes, just a few questions. And later, I'll tell you how your client can add their thoughts too. So, what's the name of the amazing project we're talking about today?
+USER: is case study generator.
+AI: Ah, the Case Study Generator — sounds intriguing! Let's start off by getting to know a bit about the client for this project. Who are they, and what industry are they in?
+USER: They are tactical they are in marketing. industry.
+AI: Marketing, got it. And what challenge were they facing before you came in with the Case Study Generator?
+USER: They are Taktika.
+AI: Gotcha, Tactica in the marketing industry. What challenge was Tactica facing before you came in with the Case Study Generator?

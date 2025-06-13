@@ -1,0 +1,18 @@
+USER: Okay, dann fangen wir...
+AI: Hey there! I'm so glad we could chat today. I'm your friendly AI buddy, here to help capture your story for a case study. I can't wait to dive into your experiences and learn more about what you've been up to. How's your day going?
+USER: Hi.
+AI: Hey there! I'm really excited to chat with you today. How's your day going so far? Anything interesting happening?
+USER: Um Great my my day has been. Great.
+AI: That's awesome to hear! I'm glad it's going well. So, let's dive in. What's your name, and which company or team are you representing today? Great to meet you, Lyaida! And you're with Borak Solution Group. Awesome! What's your role there?
+USER: My name is Lajda Bozde and I'm representing Borac Solution Group Company. AI developer
+AI: Got it, an AI developer at Borak Solution Group. Very cool. So, who was the work you did for—who's the client or audience for the project we're talking about today? Take your time! Who
+USER: Um The client is...
+AI: No worries, take your time! Who's the client for this project you're excited to share about?
+USER: Eos
+AI: Perfect! So, we're talking about a project you did for Eos. Now, what's the name of the project or solution you worked on with them? I can't wait to hear all about it.
+USER: We worked for an AI tool called Key Study Generator.
+AI: Ah, the "Key Study Generator"—sounds intriguing! Alright, Lyaida, let's jump into the fun part. Can you tell me a bit about Eos? What kind of company are they, and what's their main focus?
+USER: No. Case Study Generator.
+AI: Ah, the Case Study Generator. Sounds intriguing! Alright, so this chat will take around 5-10 minutes — just a few questions. And later, I'll explain how your client can add their insights. Sound good? Let's jump in.
+USER: Yes. Let's go
+AI: Awesome! So, tell me a bit about Eos. What kind of company are they, and what do they focus on?

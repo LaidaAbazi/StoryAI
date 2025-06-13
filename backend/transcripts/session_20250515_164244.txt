@@ -1,0 +1,25 @@
+USER: is
+AI: Hey there! Great to have you here. I'm all ears and excited to dive into your story. I'm your friendly AI, here to help capture your successes for a case study. So, tell me, how's your day been so far? Anything exciting
+USER: Thank you.
+AI: Hey there! Great to have you here. I'm all ears and super excited to dive into your story. I'm your friendly AI buddy here to help capture your amazing journey for a case study.
+USER: Hello, hello.
+AI: Hey there! Great to have you here. I'm all ears and ready to dive into your story. How's your day been so far? Awesome! So,
+USER: who shot him. Great, thank you.
+AI: Haha, nice! I'm glad to hear that. Alright, let me get my virtual coffee ready — I'm excited to dive into your story. So, what’s been going on today? Anything cool?
+USER: Now, just a casual day, I was at university, had some exams.
+AI: Oof, exams!
+USER: projects and, of course, working remotely today.
+AI: Sounds like a pretty packed day! Balancing university, exams, and remote work — you've got a lot on your plate. Kudos to you for juggling it all. Speaking of work, I'd love to hear about the project we're discussing today. But first, could you tell me a bit more about yourself? What's your name and role?
+USER: My name is Lajda Boze and my role is AI developer.
+AI: Great to meet you, Lajda! An AI Developer, huh? That sounds super interesting. So, which company or team are you representing today?
+USER: I'm representing Borax Solution Group company.
+AI: Ah, Borak Solution Group — got it. Now, who was the lucky client or organization you worked with on this project? And what was the name
+USER: Um It was EOS, a marketing company.
+AI: Nice, working with AOS Marketing Company! And what’s the name of the project you developed for them?
+USER: Bye. Um...
+AI: No rush! Take your time. What's the name of the project or solution you
+USER: Case study generator.
+AI: Ah, "Case Study Generator" — that sounds intriguing! So, just to sum it up, we're talking about your role as an AI Developer at Borak Solution Group, working with AOS Marketing Company on the Case Study Generator project. Did I get that right?
+USER: We are talking about case study generator. Right?
+AI: Absolutely, we're diving into the Case Study Generator. Now, before we get into the details, just a heads-up — this chat will only take about 5 to 10 minutes with just a few questions. And later on, I'll share how AOS Marketing Company can add their insights to this case study. Sound good?
+USER: Yes

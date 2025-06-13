@@ -1,0 +1,41 @@
+AI: Hey there! Great to chat with you today. I’m your AI friend for the day, ready to dive into your success story and capture all the details. So, how’s your day going so far? Anything exciting happening?
+USER: Bye.
+AI: Hey there! Lovely to hear from you. I'm your AI friend for today, ready to dive into your success story. So, how's your day been so far? Anything cool going on?
+USER: Great, yes.
+AI: Awesome to hear that! So, let's get to know each other a bit. What's your name, and who are you representing today?
+USER: My name is Lejda Bozy and I'm representing Borax Solution Group Company.
+AI: Great to meet you, Leyla! And Borax Solution Group—sounds intriguing! What's your role over there?
+USER: My role there is AI developer.
+AI: Ah, an AI Developer! No wonder we're getting along so well, haha! Alright, just so you know, this chat will take about 5-10 minutes—just a few questions to capture your story. And later, I'll explain how your client can join in too. Sound good?
+USER: Yes.
+AI: Fantastic! Now, let's dive into it. Could you tell me the name of the project or success story we're chatting about today?
+USER: Yes, case study generator. Bye.
+AI: Case Study Generator—sounds like a powerful tool! Let's start with a bit about the client you developed it for. Who are they, and what's their main focus or mission?
+USER: Marketing company. They are Taktika, they are...
+AI: Gotcha, so Tactica, a marketing company. What kind of challenge or opportunity were they facing that led them to you and the Case Study Generator?
+USER: They were facing manual creation of case study documents, which spans, which Really consumes them a lot of time and they wanted to automate and speed up this process somehow and they came to us with this. um, request.
+AI: Ah, I see. Manual case study creation can definitely eat up a lot of time. So, the Case Study Generator must have been a game-changer for them. Can you walk me through how it tackles that challenge and what makes it unique?
+USER: Hmm Okay, we generate the AI case study generator as I said.
+AI: Absolutely, and it's clear that you've put a lot of thought into automating and speeding up the process. Now, let's talk about the implementation. How did it go rolling out the Case Study Generator with Tactica, and what was it like collaborating with their team? Any surprises along the way?
+USER: Not really. Bye. We
+AI: Ah, smooth
+USER: The process was really good and smooth.
+AI: That's fantastic to hear! A smooth implementation is always a win. Now, I'm curious about the results. What kind of impact did Tactica see after using the Case Study Generator? Any feedback or measurable outcomes?
+USER: Yes, they.
+AI: Hmm, it sounds like they had some interesting feedback. What kind of results did they share?
+USER: They had, um... 80% reduction in time-spanning and manual. work and also Increase in client satisfication, number of clients they have.
+AI: Wow, that’s a massive improvement! An 80% reduction in time spent and a boost in client satisfaction—sounds like the Case Study Generator really hit the mark. Kudos to you and your team! Now, looking back, what are you most proud of from this project?
+USER: Maybe that we use AI to tackle something really. Good
+AI: Absolutely, using AI to make a real impact is something
+USER: Maybe the AI part is...
+AI: Absolutely, it’s amazing how AI can transform processes and deliver such impactful results. Well done! Alright, Leyla, this has been super insightful. I just have one more thing to share before we wrap up. Ready for it?
+USER: Yes.
+AI: Great! So—just a heads-up—I’ll prepare a little link and share it with you. You can forward it to Tactica when you’re ready. That link will let them hear a quick summary of our chat, and I'll ask them a couple of lightweight follow-ups so they can add their side to the story. Nothing too long—just helps us get their voice in too. Sound good?
+USER: Yes.
+AI: Awesome! Once we're done here, I'll whip up a summary of our chat. It usually takes just a couple of minutes, and you’ll see it pop up right here on the screen. There'll be simple instructions on how to invite Tactica to add their thoughts, if you'd like.
+
+And don't worry—you and your team will have full control to make any edits before it's finalized. Nothing gets sent without your review. How does that sound?
+USER: Great. That's so good. Thank you so much.
+AI: You're very welcome, Leyla! Thanks for sharing your story—it was genuinely great. If you're all set, you can go ahead and click the button to hang up. Talk soon and take care!
+USER: Thank you. Goodbye.
+AI: Goodbye, Leyla! Take care!

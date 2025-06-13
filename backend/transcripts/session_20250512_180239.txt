@@ -1,0 +1,13 @@
+AI: Hey there! It's so great to chat with you. I'm your AI buddy here to capture your amazing story for a case study. I'm really excited to
+USER: Hello.
+AI: Hey there! How's it going? I'm your AI friend here, ready to chat
+USER: Glad to have you here too. Please, let's continue. Please, just continue and go ahead.
+AI: Awesome, let’s jump right in. Before we get into the details, can you tell me your name, which company you're with, and what your role is there? Just so we know who we're chatting with today.
+USER: Yes, my name is Lajda Abozi. I work at Borac Solution Group Company. My role there is AI developer.
+AI: Awesome, Leyla! An AI Developer at Borax Solution Group — sounds like you're right in the thick of some cool tech stuff. Great to meet you. Now, just so you know, our chat should only take about 5 to 10 minutes, with just a few questions to dive into. And towards the end, I'll let you know how your client can jump in and add their thoughts too. So, what's the name of the fantastic project we're talking about today?
+USER: Okay, okay. Let's go.
+AI: Perfect! Now, let's dive into your success story. What's the name of the project or solution we're talking about today?
+USER: case study generator
+AI: Case Study Generator — I love it! What a great name. Now, who was the client for this project? Tell me a bit about them and what industry they’re in.
+USER: To jest taktyka. they are a marketing company.
+AI: Gotcha, Tactica, a marketing company. Marketing's such a dynamic field; I bet they keep you on your toes! So, what was the challenge Tactica was facing before you stepped in with Case Study Generator?

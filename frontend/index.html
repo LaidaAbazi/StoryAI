@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Case Study Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(145deg, #e6f0fa 0%, #e0e7ff 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+    .interview-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(49, 46, 129, 0.10);
+      padding: 40px 36px 32px 36px;
+      max-width: 520px;
+      width: 100%;
+      margin: 60px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .interview-header {
+      font-size: 2.1rem;
+      font-weight: bold;
+      color: #222;
+      text-align: center;
+      margin-bottom: 18px;
+      margin-top: 30px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      letter-spacing: 0.01em;
+    }
+    .circle-visual {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 4px 8px 0 rgba(56, 189, 248, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px auto;
+      margin-top: 100px;
+      position: relative;
+      border: none;
+      overflow: hidden;
+    }
+    #ai-bars {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+      background: none;
+      box-shadow: none;
+      border: none;
+      margin: 0;
+      gap: 0;
+      pointer-events: none;
+    }
+    #ai-bars .bar {
+      width: 12px;
+      height: 80px;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #2563eb 0%, #38bdf8 100%);
+      box-shadow: 0 0 12px 2px #38bdf844;
+      transition: height 0.18s cubic-bezier(.4,0,.2,1), box-shadow 0.2s;
+      opacity: 0.98;
+      margin: 0 7px;
+      display: block;
+    }
+    .button-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      margin-bottom: 0;
+    }
+    .dashboard-btn, #endBtn {
+      border-radius: 18px !important;
+      box-shadow: 0 4px 16px 0 rgba(56, 189, 248, 0.18), 0 1.5px 6px rgba(49,46,129,0.10);
+      font-size: 1.08rem;
+      font-weight: 600;
+      padding: 14px 32px;
+      letter-spacing: 0.04em;
+      margin: 0;
+      margin-bottom: 0;
+      transition: filter 0.2s, background 0.2s;
+    }
+    .dashboard-btn:hover, #endBtn:hover {
+      filter: brightness(1.12);
+    }
+    .hidden {
+      display: none;
+    }
+    .countdown {
+      font-size: 2rem;
+      color: #3a86ff;
+      font-weight: bold;
+    }
+    #spinner {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .loader {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #3a86ff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    #endBtn {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+    #endBtn:hover {
+      background-color: #c82333;
+    }
+    #downloadBtn {
+      background-color: #28a745;
+      color: white;
+      padding: 12px 25px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 1.1rem;
+      display: inline-block;
+      margin-top: 20px;
+    }
+    #downloadBtn:hover {
+      background-color: #218838;
+    }
+    #clientLinkContainer {
+      margin-top: 40px;
+      text-align: center;
+      max-width: 600px;
+      width: 90%;
+    }
+    .link-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #f5f8fa;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 12px;
+      gap: 10px;
+    }
+    #clientLinkInput {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 1rem;
+      color: #333;
+      padding-left: 8px;
+    }
+    #clientLinkInput:focus {
+      outline: none;
+    }
+    #copyLinkBtn {
+      background-color: #3a86ff;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background-color 0.3s ease;
+    }
+    #copyLinkBtn:hover {
+      background-color: #265df2;
+    }
+    .link-instructions {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      color: #666;
+    }
+    #endBtn:disabled,
+    #endBtn[disabled],
+    #endBtn.ended {
+      background: #b0b4ba !important;
+      color: #fff !important;
+      border-radius: 18px !important;
+      box-shadow: 0 4px 16px 0 rgba(160, 160, 160, 0.18);
+      cursor: not-allowed;
+      border: none;
+      opacity: 1;
+      font-weight: 700;
+    }
+    /* --- SUMMARY & CLIENT LINK STYLES --- */
+    .case-study-section {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px 0 rgba(49, 46, 129, 0.10);
+      padding: 40px 36px 32px 36px;
+      max-width: 700px;
+      width: 100%;
+      margin: 40px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #editableCaseStudy {
+      width: 700px;
+      height: 400px;
+      border-radius: 14px;
+      background: #f8fbff;
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+      font-size: 1.08rem;
+      padding: 18px;
+      border: none;
+      box-shadow: 0 2px 12px 0 #2563eb22;
+      overflow-y: auto;
+      resize: none;
+      margin-bottom: 0;
+      outline: none;
+      color: #222;
+    }
+    .summary-btn-row {
+      display: flex;
+      flex-direction: row;
+      gap: 18px;
+      margin-top: 18px;
+      justify-content: center;
+      width: 100%;
+    }
+    .blue-gradient-btn {
+      background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      padding: 14px 32px;
+      box-shadow: 0 4px 16px 0 #38bdf844;
+      cursor: pointer;
+      transition: filter 0.2s;
+      letter-spacing: 0.04em;
+      margin-top: 0;
+    }
+    .blue-gradient-btn:hover {
+      filter: brightness(1.12);
+    }
+    .summary-input-row {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      margin: 18px 0 0 0;
+      width: 100%;
+      justify-content: center;
+    }
+    .summary-input-row input[type="text"] {
+      border-radius: 10px;
+      border: 1.5px solid #e0e7ff;
+      padding: 10px 16px;
+      font-size: 1.08rem;
+      box-shadow: 0 2px 8px 0 #2563eb11;
+      background: #f8fbff;
+      outline: none;
+      transition: border 0.2s;
+      width: 220px;
+    }
+    .summary-input-row input[type="text"]:focus {
+      border: 1.5px solid #38bdf8;
+    }
+    /* --- CLIENT LINK --- */
+    #clientLinkContainer {
+      margin: 32px auto 0 auto;
+      text-align: center;
+      max-width: 700px;
+      width: 100%;
+      background: none;
+    }
+    .link-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f8fa;
+      border: 1px solid #e0e7ff;
+      border-radius: 12px;
+      padding: 12px 18px;
+      gap: 10px;
+      margin: 0 auto 0 auto;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 2px 8px 0 #2563eb11;
+    }
+    #clientLinkInput {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 1.08rem;
+      color: #333;
+      padding-left: 8px;
+      outline: none;
+    }
+    #copyLinkBtn {
+      background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.98rem;
+      transition: filter 0.2s;
+      box-shadow: 0 2px 8px 0 #38bdf822;
+    }
+    #copyLinkBtn:hover {
+      filter: brightness(1.12);
+    }
+    .link-instructions {
+      margin-top: 10px;
+      font-size: 0.98rem;
+      color: #666;
+    }
+    /* --- POST-INTERVIEW STATE --- */
+    body.post-interview .circle-visual,
+    body.post-interview #ai-bars,
+    body.post-interview .button-row,
+    body.post-interview #endBtn,
+    body.post-interview #startBtn {
+      display: none !important;
+    }
+    body.post-interview .case-study-section,
+    body.post-interview #clientLinkContainer {
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 800px;
+      margin: 40px auto 0 auto;
+    }
+    .case-study-section {
+      margin: 40px auto 0 auto;
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: none;
+    }
+    #editableCaseStudy {
+      width: 700px;
+      height: 400px;
+      border-radius: 14px;
+      background: #f8fbff;
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+      font-size: 1.08rem;
+      padding: 18px;
+      border: none;
+      box-shadow: 0 2px 12px 0 #2563eb22;
+      overflow-y: auto;
+      resize: none;
+      margin-bottom: 24px;
+      outline: none;
+      color: #222;
+    }
+    .summary-btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 0;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+    .blue-gradient-btn {
+      background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      padding: 14px 0;
+      box-shadow: 0 4px 16px 0 #38bdf844;
+      cursor: pointer;
+      transition: filter 0.2s;
+      letter-spacing: 0.04em;
+      margin-top: 0;
+      width: 100%;
+      max-width: 320px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .blue-gradient-btn:hover {
+      filter: brightness(1.12);
+    }
+    /* --- CLIENT LINK --- */
+    #clientLinkContainer {
+      margin: 32px auto 0 auto;
+      text-align: center;
+      max-width: 700px;
+      width: 100%;
+      background: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .link-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f8fa;
+      border: 1px solid #e0e7ff;
+      border-radius: 12px;
+      padding: 12px 18px;
+      gap: 10px;
+      margin: 0 auto 0 auto;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 2px 8px 0 #2563eb11;
+    }
+    #clientLinkInput {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 1.08rem;
+      color: #333;
+      padding-left: 8px;
+      outline: none;
+    }
+    #copyLinkBtn {
+      background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.98rem;
+      transition: filter 0.2s;
+      box-shadow: 0 2px 8px 0 #38bdf822;
+    }
+    #copyLinkBtn:hover {
+      filter: brightness(1.12);
+    }
+    .link-instructions {
+      margin-top: 10px;
+      font-size: 0.98rem;
+      color: #666;
+    }
+    .post-interview-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px 0 rgba(49, 46, 129, 0.10);
+      padding: 40px 36px 32px 36px;
+      max-width: 700px;
+      width: 100%;
+      margin: 40px auto 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .post-interview-headline {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #222;
+      text-align: center;
+      margin-bottom: 24px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      letter-spacing: 0.01em;
+    }
+  </style>
+</head>
+<body>
+  <div class="back-to-dashboard" style="position: absolute; top: 32px; left: 32px; z-index: 10;">
+    <a href="dashboard.html" style="text-decoration: none; color: #312E81; font-size: 1.5rem; display: flex; align-items: center; gap: 6px; font-family: 'Montserrat', Arial, sans-serif; font-weight: 600;">
+      <i class="fa fa-arrow-left"></i> <span style="font-size: 1.08rem;">Back to Dashboard</span>
+    </a>
+  </div>
+  <div class="interview-header">Let the Story Flow</div>
+  <div class="circle-visual">
+    <div id="ai-bars">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+  </div>
+  <div class="button-row">
+    <button id="startBtn" class="dashboard-btn">Start Your Story</button>
+    <button id="endBtn" class="dashboard-btn hidden" style="background: #dc3545;">End Interview</button>
+  </div>
+  <div id="status" style="margin: 12px 0 0 0; color: #312E81; font-size: 1.08rem; min-height: 24px; text-align: center;"></div>
+  <div id="countdown" class="hidden">
+    <p class="countdown" id="timer">1:00</p>
+  </div>
+  <audio id="aiAudio" autoplay></audio>
+  <div id="summaryLoadingOverlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(255,255,255,0.7);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:#fff;padding:32px 48px;border-radius:18px;box-shadow:0 2px 16px #2563eb22;display:flex;flex-direction:column;align-items:center;">
+      <div class="loader" style="border:6px solid #f3f3f3;border-top:6px solid #3a86ff;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;"></div>
+      <div style="margin-top:18px;font-size:1.15rem;color:#2563eb;font-weight:600;">Loading summary and fields...</div>
+    </div>
+  </div>
+  <div id="summaryLoadingText" style="display:none;text-align:center;font-size:1.15rem;color:#2563eb;font-weight:600;margin-top:32px;margin-bottom:12px;">Please wait a moment while your summary is being prepared...</div>
+  <div id="caseStudyEditor" class="case-study-section hidden">
+    <label for="editableCaseStudy" style="font-weight:bold;margin-bottom:8px;">Edit Case Study Summary:</label>
+    <div class="summary-input-row">
+      <label style="font-weight:bold;">Solution Provider:
+        <input id="providerNameInput" type="text" />
+      </label>
+      <label style="font-weight:bold;">Client:
+        <input id="clientNameInput" type="text" />
+      </label>
+      <label style="font-weight:bold;">Project:
+        <input id="projectNameInput" type="text" />
+      </label>
+    </div>
+    <textarea id="editableCaseStudy"></textarea>
+    <div class="summary-btn-row">
+      <button id="applyNameChangesBtn" class="blue-gradient-btn">Apply Name Changes</button>
+      <button id="saveSummaryBtn" class="blue-gradient-btn">Save Summary</button>
+    </div>
+  </div>
+  <div id="clientLinkContainer" class="hidden">
+    <div class="link-box">
+      <input id="clientLinkInput" type="text" readonly />
+      <button id="copyLinkBtn">Copy Link</button>
+    </div>
+    <div class="link-instructions">Share this link with your client to invite them to add their feedback.</div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

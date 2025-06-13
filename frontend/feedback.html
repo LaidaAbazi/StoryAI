@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback | Story Boom AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;500;400&display=swap" rel="stylesheet">
+    <style>
+        .feedback-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            background: #312E81;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-interface {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(49, 46, 129, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .feedback-history {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 12px rgba(49, 46, 129, 0.08);
+        }
+
+        .transcript {
+            height: 200px;
+            overflow-y: auto;
+            margin: 15px 0;
+            padding: 15px;
+            border: 1px solid #E0E7FF;
+            border-radius: 8px;
+            background: #F8FAFC;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #312E81 0%, #06B6D4 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .feedback-item {
+            padding: 15px;
+            border-bottom: 1px solid #E0E7FF;
+            margin-bottom: 10px;
+        }
+
+        .feedback-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .status {
+            margin-bottom: 15px;
+            color: #06B6D4;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="feedback-container">
+        <div class="feedback-header">
+            <button class="back-btn" onclick="window.location.href='dashboard.html'">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </button>
+            <h1>Share Your Feedback</h1>
+        </div>
+
+        <div class="feedback-interface">
+            <div id="feedbackStatus" class="status"></div>
+            <div id="feedbackTranscript" class="transcript"></div>
+            <audio id="aiAudio" autoplay></audio>
+            <div class="controls">
+                <button id="startFeedback" class="btn btn-primary">Start Conversation</button>
+                <button id="stopFeedback" class="btn btn-danger" disabled>End Conversation</button>
+            </div>
+        </div>
+
+        <!-- Removed feedback history section -->
+
+    </div>
+    <!-- Place the script here, just before </body> -->
+    <script src="feedback.js"></script>
+</body>
+</html> 

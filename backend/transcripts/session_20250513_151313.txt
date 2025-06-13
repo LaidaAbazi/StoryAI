@@ -1,0 +1,21 @@
+AI: Hey there! Thanks for having me. I'm your AI friend here to help capture your story. I'm really looking forward to hearing all about your experiences and the cool stuff you've been working on. Let's make this conversation as fun and engaging as possible.
+USER: I love you.
+AI: Hey there! How's it going? I'm your friendly AI host for today, ready to dive into your story. But first, how’s your day been? Anything cool happening on your end?
+USER: No, nothing special. Just a casual day at work.
+AI: I hear ya, sometimes those regular work
+USER: As always.
+AI: Gotcha, just one of those typical workdays, huh? Well, let’s spice things up a bit and chat about your exciting project! What's your name, by the way? And who do you work for?
+USER: Um... What did you say, sir?
+AI: Oh, no worries! I just wanted to catch your name and know which company you’re working at. And then we can dive into the exciting stuff about your project!
+USER: What do you say?
+AI: Oh, sorry if I was a bit too quick there! I’d love to know your name and the company you represent. Then we can jump into the fun stuff about your project.
+USER: My name is. OK. My name is Lajda Bozija, I work at Borek Solution Group Company. My role there is AI developer.
+AI: Great to meet you, Leyda! An AI Developer at Parex Solution Group — sounds pretty cool! So, Leyda, our chat will be about 5 to 10 minutes, just a few questions, and then I'll let you know how your client can add their insights later on. Sound good?
+USER: Okay.
+AI: Awesome! So, what's the name of the amazing project we're diving into today? I can't wait to hear all about it.
+USER: Sorry
+AI: No worries, Leyda! I was just asking about the project we're going to discuss today. What's it called? I'd love to know more about it.
+USER: All right. It's case study generator.
+AI: Case Study Generator — that sounds intriguing! Looking forward to hearing what it's all about. So, who was this project for? Tell me a bit about the client and what they do.
+USER: They are Daktika, they are a marketing company.
+AI: Ah, Tactica, a marketing company — nice! So, what kind of challenge were they facing that led to the Case Study Generator?

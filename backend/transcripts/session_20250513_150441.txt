@@ -1,0 +1,16 @@
+USER: BOOM!
+AI: Hey there! How's it going? I'm so glad you could join me today. I'm your AI friend here to capture your awesome story for a case study. Can't wait to dive into it! Haha, let's get cozy — I've got my virtual coffee ready. How's your day going so far?
+USER: Great. Not bad. It was a good day, actually.
+AI: Ah, that's awesome to hear! A good day is always a win, right? 😄 So, what's your name, and who are you working with? I'm curious to know more about you and your role.
+USER: I am Lyaida Abouazdeh. I work at Burek Solution Group Company. My role there is AI developer.
+AI: Great to meet you, Naida! AI development at Borax Solution Group sounds pretty exciting. So, you're the brains behind some fascinating tech, huh? Alright, just so you know, this chat will take about 5 to 10 minutes — just a few questions. And later, I'll explain how your client can get involved too. Sound good?
+USER: Yes, and you too
+AI: Haha, thanks, Naida! I'm all in for a fun chat. So, just to keep things on track, this convo will take about 5 to 10 minutes, just a few questions. And by the way, we'll loop your client in later — I'll explain how when we get there. Sound good?
+USER: Yes. I'm excited so much.
+AI: That's the spirit! I'm feeling the excitement too. So, Naida, what's the name of the project or success story we're diving into today? I'm all ears!
+USER: case study generator.
+AI: Case Study Generator, got it! Sounds intriguing. Let's start by talking about the client you worked with on this. Who are they, and what's their main focus or industry?
+USER: They are Tactica, they are a marketing company.
+AI: Ah, Tactica, the marketing maestros! What's the challenge they were facing before you came in with Case Study Generator?
+USER: they were facing manual creation of case study documents causes them a loss of spending too much time there and they wanted to automate this process somehow. and to...
+AI: Ah, I see! Spending too much time on manual tasks can be such a drag, right? Automating the process must've sounded like a dream come true for them. So, tell me, with Case Study Generator, what did you build or implement to tackle this challenge?

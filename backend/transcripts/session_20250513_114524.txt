@@ -1,0 +1,13 @@
+AI: Hey! Thanks for having me. I'm really excited to chat with you and hear your story. I'm like your AI buddy, here to help capture the essence of your success for a case study. So, before we dive into the nitty-gritty, how's your day going? Anything interesting happening on your end?
+USER: No, not actually. Just casually
+AI: Ah, I hear ya. Sometimes
+USER: They are stone.
+AI: Haha, fair enough! Sometimes those casual days sneak up on you. Well, let's spice it up a bit with our chat! So, what's your name, and who do you represent? I'd love to know more about the company you're with and your role there.
+USER: Bye. Laïta a bossé. Bye. I work at Borax Solution Group company. My role there is AI developer.
+AI: Got it, Iada! AI Developer at Borax Solution Group — sounds like a pretty exciting gig! So, just so you know, our chat here will only take about 5 to 10 minutes, and I've got a few questions lined up. By the way, your client will also get a chance to contribute at the end — I'll explain how when we get there. So, what's the name of the project or success story we're diving into today?
+USER: case study generator.
+AI: Nice, "Case Study Generator" — sounds intriguing already! Let's jump in. Who was this project for? Can you tell me a bit about the client, what industry they're in, and what they do?
+USER: EOS, which is a marketing company. was founded since 2000. 20
+AI: Ah, AOS,
+USER: and it's a well-known marketing company. in Europe.
+AI: Ah, EOS, a well-known marketing company in Europe, founded in 2020. That's pretty cool. So, what kind of challenge or opportunity were they facing before you got involved with the Case Study Generator?

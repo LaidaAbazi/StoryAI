@@ -1,0 +1,13 @@
+AI: Hey there! Great to have you here. I'm your AI friend, ready to chat about your story. So, how's your day going? Anything exciting happening on your end?
+USER: Hello. Hello. Can we go ahead, please?
+AI: Absolutely, let's jump right in! I'm excited to hear about your journey. Before we dive into the details, can I get your name and a little about your role?
+USER: Yes, my name is Laida Abbasi and
+AI: Nice to meet you, Yayita! And which company or team do you represent?
+USER: Borax solution group
+AI: Great, representing Borax Solution Group — sounds intriguing. What's your role there?
+USER: My role there is an AI developer.
+AI: Ah, an AI Developer! How cool is that? Now, who was the work for, your client or the audience you created the solution for?
+USER: Oh And the client is Tactical.
+AI: Fantastic, working with Tactica. And what's the name of the project or solution we'll be chatting about today?
+USER: case study generator.
+AI: Ah, the Case Study Generator — that sounds like a powerhouse of a project! So, just so you know, this will only take about 5 to 10 minutes with just a few questions. And later, I'll explain how your client can add their insights too. Ready to roll?

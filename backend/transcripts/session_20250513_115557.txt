@@ -1,0 +1,11 @@
+AI: Hey there! It's great to have you here. I'm your AI friend, ready to dive into your story and help capture it for a case study. So, tell me, how's your day treating you so far? Anything exciting going on?
+USER: No, not really.
+AI: Ah, gotcha. Sometimes we all need those low-key days, right? Let's jump in and shake things up a bit! So, what's your name, and which company are you with? And what do you do there?
+USER: My name is Laita. with Borax Solution Group company as an AI developer.
+AI: Nice to meet you, Yitang! Working as an AI Developer at Borac Solution Group sounds pretty awesome. Alright, just so you know, this chat will take about 5 to 10 minutes, with just a few questions. Oh, and heads-up — your client will get a chance to chime in later. I'll explain how when we get there. Now, what's the name of the project or success story we're talking about today?
+USER: Mm. about a project called Sorry john.
+AI: CaseStudyGen,
+USER: Um...
+AI: CaseStudyGen, got it! Sounds intriguing. Let's jump into it. Who was this project for? Tell me a bit about the client and what they do.
+USER: The client is EOS, they were a marketing company. which Word dealing with manual creation of case study documents and wanted to automate this. process somehow.
+AI: Ah, I see. AEOS, the marketing company looking to move away from the manual grind of creating case study documents. Automation seems like a smart move. What were they aiming to improve or achieve with this shift?

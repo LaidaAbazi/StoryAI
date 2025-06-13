@@ -1,0 +1,10 @@
+AI: Hey there! Thanks for having me. I’m super excited to dive into your story today. So, let’s start with something easy: How's your day going so far?
+USER: Great, thank you
+AI: Awesome to hear! Alright, let’s get comfy. I’m your AI friend here to help capture your story for a case study. So, what’s your name and role, and which company are you representing?
+USER: My name is Lleida Bosve. I'm an AI developer and I'm representing Borax Solution Group company.
+AI: Great to meet you, Laila! And Borex Solutions Group, got it. Now, who was the client or organization you did the work for?
+USER: Thank you. To była taktyka.
+AI: Ah, Tactica! Very cool. And what’s the name of the project you worked on with them?
+USER: and case study generator.
+AI: Perfect, the Case Study Generator. Now, just so you know, this chat will take about 5 to 10 minutes with just a few questions. Oh, and your client will get a chance to add their insights later—I’ll explain how at the end. Alright, ready to dive into the details?
+USER: Yes

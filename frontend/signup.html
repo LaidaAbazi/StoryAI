@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up | Case Study Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: linear-gradient(145deg, #eef1f5, #ffffff);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .auth-container {
+      background: #fff;
+      padding: 40px 32px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(60, 80, 180, 0.08);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    .auth-title {
+      font-size: 2rem;
+      color: #3a3a5a;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+    .auth-form input {
+      width: 100%;
+      padding: 14px 12px;
+      margin: 10px 0;
+      border: 1px solid #dbeafe;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: #f7faff;
+      transition: border 0.2s;
+    }
+    .auth-form input:focus {
+      border: 1.5px solid #3a86ff;
+      outline: none;
+    }
+    .auth-btn {
+      width: 100%;
+      padding: 14px 0;
+      background: #3a86ff;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 18px;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(60, 80, 180, 0.08);
+    }
+    .auth-btn:hover {
+      background: #265df2;
+    }
+    .auth-btn:disabled {
+      background: #a1a1aa;
+      cursor: not-allowed;
+    }
+    .auth-link {
+      display: block;
+      margin-top: 18px;
+      color: #3a86ff;
+      text-decoration: none;
+      font-size: 0.98rem;
+      transition: color 0.2s;
+    }
+    .auth-link:hover {
+      color: #265df2;
+      text-decoration: underline;
+    }
+    .error-message {
+      color: #dc3545;
+      margin-top: 10px;
+      font-size: 0.98rem;
+    }
+    .password-requirements {
+      text-align: left;
+      margin: 10px 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .password-requirements ul {
+      list-style: none;
+      padding: 0;
+      margin: 5px 0;
+    }
+    .password-requirements li {
+      margin: 5px 0;
+      display: flex;
+      align-items: center;
+    }
+    .password-requirements li::before {
+      content: "×";
+      color: #dc3545;
+      margin-right: 8px;
+      font-weight: bold;
+    }
+    .password-requirements li.valid::before {
+      content: "✓";
+      color: #28a745;
+    }
+    .password-strength {
+      height: 4px;
+      background: #eee;
+      margin: 10px 0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .password-strength-bar {
+      height: 100%;
+      width: 0;
+      transition: width 0.3s, background-color 0.3s;
+    }
+    .password-strength-text {
+      font-size: 0.9rem;
+      color: #666;
+      text-align: left;
+    }
+    .input-group {
+      position: relative;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-title">Create Your Account</div>
+    <form class="auth-form" id="signupForm" autocomplete="off">
+      <input type="text" name="first_name" placeholder="First Name" required maxlength="100" />
+      <input type="text" name="last_name" placeholder="Last Name" required maxlength="100" />
+      <input type="email" name="email" placeholder="Email" required maxlength="255" />
+      <input type="text" name="company" placeholder="Company Name" required maxlength="255" />
+      <div class="input-group">
+        <input type="password" name="password" id="password" placeholder="Password" required />
+        <button type="button" class="toggle-password" onclick="togglePassword()">👁️</button>
+      </div>
+      <div class="password-strength">
+        <div class="password-strength-bar" id="strengthBar"></div>
+      </div>
+      <div class="password-strength-text" id="strengthText"></div>
+      <div class="password-requirements">
+        <ul id="requirements">
+          <li data-requirement="length">At least 8 characters long</li>
+          <li data-requirement="uppercase">Contains uppercase letter</li>
+          <li data-requirement="lowercase">Contains lowercase letter</li>
+          <li data-requirement="number">Contains number</li>
+          <li data-requirement="special">Contains special character</li>
+        </ul>
+      </div>
+      <button class="auth-btn" type="submit" id="submitBtn" disabled>Sign Up</button>
+      <div class="error-message" id="signupError"></div>
+    </form>
+    <a class="auth-link" href="login.html">Already have an account? Log in</a>
+  </div>
+  <script>
+    const password = document.getElementById('password');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    const requirements = document.getElementById('requirements');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorDiv = document.getElementById('signupError');
+
+    function togglePassword() {
+      const type = password.type === 'password' ? 'text' : 'password';
+      password.type = type;
+    }
+
+    function checkPasswordStrength(password) {
+      let strength = 0;
+      const requirements = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /\d/.test(password),
+        special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+      };
+
+      // Update requirement indicators
+      Object.entries(requirements).forEach(([req, valid]) => {
+        const li = document.querySelector(`[data-requirement="${req}"]`);
+        if (valid) {
+          li.classList.add('valid');
+          strength += 20;
+        } else {
+          li.classList.remove('valid');
+        }
+      });
+
+      // Update strength bar
+      strengthBar.style.width = `${strength}%`;
+      if (strength < 40) {
+        strengthBar.style.backgroundColor = '#dc3545';
+        strengthText.textContent = 'Weak';
+      } else if (strength < 80) {
+        strengthBar.style.backgroundColor = '#ffc107';
+        strengthText.textContent = 'Medium';
+      } else {
+        strengthBar.style.backgroundColor = '#28a745';
+        strengthText.textContent = 'Strong';
+      }
+
+      // Enable/disable submit button
+      submitBtn.disabled = strength < 80;
+    }
+
+    password.addEventListener('input', () => {
+      checkPasswordStrength(password.value);
+    });
+
+    document.getElementById('signupForm').onsubmit = async function(e) {
+      e.preventDefault();
+      errorDiv.textContent = '';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing up...';
+
+      const form = e.target;
+      const data = {
+        first_name: form.first_name.value,
+        last_name: form.last_name.value,
+        email: form.email.value,
+        company: form.company.value,
+        password: form.password.value
+      };
+
+      try {
+        const res = await fetch('/api/signup', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        
+        if (result.success) {
+          window.location.href = 'dashboard.html';
+        } else {
+          errorDiv.textContent = result.message || 'Sign up failed.';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign Up';
+        }
+      } catch (error) {
+        errorDiv.textContent = 'Network error. Please try again.';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign Up';
+      }
+    };
+  </script>
+</body>
+</html> 

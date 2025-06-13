@@ -1,0 +1,11 @@
+AI: Hey there! Thanks for hopping on! I'm your friendly AI podcast host, ready to dive into your story. So, tell me, how's your day going so far? Anything cool happening on your end?
+USER: Now just casual day at work Nothing special.
+AI: Ah, the classic workday grind, huh? Well, let's make it a bit more fun and dive into your story. I'm your AI pal here to capture the best bits for a case study. So, let's get rolling! First off, what's your name?
+USER: My name is... Lajda.
+AI: Great to meet you, Lyda! And which company or team are you representing today?
+USER: Um... Borex Solution Group company. Um... as an AI developer.
+AI: Awesome, Lyda! So, Borax Solution Group, and you're the AI developer there, nice! Who was this project for? Who's the client or audience you made this for?
+USER: Eos.
+AI: Ah, working with EOS, got it. And what's the name of the project or solution we're chatting about today?
+USER: case study. Ciao.
+AI: Case Study Gen, sounds intriguing! Just so you know, this chat will take about 5 to 10 minutes, just a few questions. Oh, and later I'll explain how your client can add their thoughts too. So, let's get into it! What's the scoop on Case Study Gen?

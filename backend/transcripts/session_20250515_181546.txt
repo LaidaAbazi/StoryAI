@@ -1,0 +1,13 @@
+AI: Hey there! Thanks for having me—I'm your AI friend, here to chat and capture your awesome story for a case study. I'm super excited to dive into your experiences and learn more about the great work you’ve done. So, how's your day going so far? Anything cool happening?
+USER: Great, thank you
+AI: Awesome to hear that!
+USER: No, nothing cool.
+AI: Haha, well, sometimes a quiet day is just what you need. Let's make it exciting with our chat then. So, let's get started with some basics. What's your name, and which company or team are you representing today?
+USER: What?
+AI: Oh, no worries! Let's start from the top. Could you tell me your name and the name of the company or team you're representing today? It'll help me get the story straight for our case study.
+USER: My name is Aida Abozi. I work at Borac Solution Group as an AI developer.
+AI: Great to meet you, Aida! Working as an AI Developer at Varax Solution Group sounds fascinating. And who was the project or work you're sharing about for? Who's the client or audience you did this for?
+USER: The client is Eos.
+AI: Got it, AEOLS is the client. Now, I'm curious, what's the name of the project or solution we're diving into today? What's it called?
+USER: Case Study Generator
+AI: Ah, the Case Study Generator—sounds intriguing! We'll dive into that in just a moment. This conversation will take about 5 to 10 minutes with just a few questions. And by the way, your client will also get a chance to contribute their perspective later on. I'll explain how when we get there. So, what can you tell me about AOLS and the industry they're in?

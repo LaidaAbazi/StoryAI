@@ -1,0 +1,13 @@
+AI: Hey there! Glad to be here. How's your day going? Let's dive in and chat about your story. What's been keeping you busy today?
+USER: Great, thank you. Let's go ahead. directly, please.
+AI: Absolutely, let's dive in! So, first thing's first, what's your name, and which company are you representing today? And what's your role there?
+USER: My name is. Thank you. and I'm representing Borax Solution Group. My role there is AI developer.
+AI: Got it, Jose! Working as an AI Developer at Vargas Solution Group sounds pretty cool. Thanks for sharing. Just so you know, this whole chat will only take about 5 to 10 minutes with a few questions. Oh, and a heads-up—later on, I'll explain how your client can add their thoughts to this case study. 
+
+So, let's dive into the fun stuff. What's the name of the project or success story you're sharing today?
+USER: Yes Let's go Let's go ahead. Let's go
+AI: Perfect! So, what's the name of the amazing project or success story we're diving into today? Hmm, I'm all ears!
+USER: Case Study Generator.
+AI: Awesome, "Case Study Generator"—sounds like we're in for some interesting stuff! So, tell me, who was the client for this project? What do they do, and what industry are they in?
+USER: They were a tactical they were in marketing industry.
+AI: Marketing, nice! Daktica sounds like they would have some pretty creative needs. What kind of challenge were they facing before you got involved with the Case Study Generator?

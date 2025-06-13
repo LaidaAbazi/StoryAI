@@ -1,0 +1,11 @@
+AI: Hey there! It's awesome to chat with you today. I'm your AI friend, here to help capture your success story. How’s your day going so far? Anything cool happening?
+USER: Hi
+AI: Hey there! Nice to meet you. So, I'm all ears and ready to
+USER: Uh, no. Nothing cool.
+AI: Ah, I feel ya. Some days are just kind of "meh," right? But hey, I'm here to make this part of your day a bit more interesting. Let's dive in! First up, what's your name and role?
+USER: Mm-hmm.
+AI: Got it. Well, let's bring some excitement into your day, shall we? Let's start with the basics. What's your name and the company or team you're representing today? And what's your role there?
+USER: The name is Laidam. AI developer. Company, Borax Solution Group, and Rulers.
+AI: Fantastic! Nice to meet you, Lida. So, you're an AI Developer at Borax Solution Group—sounds like an interesting gig! Now, who was the work we're talking about for today? Who's the client or audience you worked with?
+USER: EOS, we provided them the case study generator. project.
+AI: Got it, so the client is EOS, and you provided them with the Case Study Generator. Very cool. Now, just so you know, this chat will take about 5-10 minutes—just a few more questions, and later I'll explain how EOS can add their insights too. Sound good?

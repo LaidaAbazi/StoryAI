@@ -1,0 +1,17 @@
+AI: Hey there! It's great to have you here. I'm your friendly AI buddy, ready to dive into your story and capture all the cool details for your case study. How's your day going so far? Anything exciting happening today?
+USER: Great, thank you. No, not really. anything exciting, just a casual day at work. I worked on something really hard and I hope it's gonna work now.
+AI: Ah, the classic "fingers crossed" kind of day, huh? I totally get it. Sometimes those casual days turn out to be the most productive. So, let's kick things off! What's your name, and who do you represent? I'd love to know what company you're working with and your role there. I'm
+USER: Peace. Yes.
+AI: Haha, well, I'm sure all that hard work is going to pay off. So, let's dive into your story a bit. What's your name, and which company are you with? And what's your role there?
+USER: I'm... I'm Laeta Bosse, I'm with Parag Solution Group Company, my role there is AI developer.
+AI: It's awesome to meet you, Liad. Working as an AI Developer at Verax Solution Group sounds pretty cool. Before we get into the details, just so you know, this whole chat will take about 5 to 10 minutes, with just a few questions. And later, I'll explain how your client can add their thoughts too. Sound good?
+USER: Yes.
+AI: Awesome. Alright, so what's the name
+USER: I'm really excited.
+AI: Awesome, I love the energy! So, what's the name of the project you've been working hard on? Let's get into the good stuff.
+USER: Peace. You It is case study generator.
+AI: Ah, the Case Study Generator — nice! So, who was this project for? Can you tell me a bit about the client you worked with, like what industry they're in and what they do?
+USER: Yes.
+AI: Great! Can't wait to hear about it. So, what's the name of the client, and what kind of challenges were they facing before Got it, a marketing company, Tactical.
+USER: They are Taktika, they are a marketing company and they provide marketing solutions to their clients. I'm afraid It's a well-known company in Europe, founded since 2020.
+AI: Ah, got it. Tactical sounds like a real powerhouse in the marketing world, especially being around since 2020. So, what kind of challenge or opportunity were they facing that led them to you and the Case Study Generator?

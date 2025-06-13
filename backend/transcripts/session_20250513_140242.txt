@@ -1,0 +1,18 @@
+AI: Hey there! Thanks for having me. I'm really excited to chat with you and capture your story. So, how's it going today? Anything cool happening on your end?
+USER: Bye. Thank you.
+AI: Haha, nice! What’s up on your end? How’s your day going so far?
+USER: Thank you for watching.
+AI: I'm doing great, thanks for asking! So, let's dive right in. What's your name and who do you represent? Awesome, Laila! And what's your role over at DataWorld?
+USER: ...and later on. My name is slater bosnia and i work at barack solution group company my role there is a developer.
+AI: Awesome, Leyla! It's great to meet you. An AI Developer at Borax Solution Group — sounds like you're doing some pretty cool stuff over there. So, before we jump into your project, just a heads up, this chat will take about 5-10 minutes, and I'll ask you a few questions. Sound good? Also, I'll explain later on how your client will get involved in this case study process. 
+
+So, what's the name of the project we're diving into today?
+USER: Mm-hmm.
+AI: By the way, your client will also get a chance to contribute at the end — I’ll explain how when we get there. Now, can you tell me about the project we’ll be discussing today? What's it called?
+USER: Yes, it is case study generator project.
+AI: Ah, the Case Study Generator Project! Sounds intriguing. Let's dive into it—who was this project for? Tell me a bit about the client.
+USER: Yes, a client is AOS which is a marketing company operates in many countries in Europe and is founded since 2020. Yes.
+AI: Cool, so EOS is a marketing company with quite a presence across Europe since 2020. What challenge were they facing before you got involved?
+USER: Yeah.
+AI: So, what challenge were they looking to tackle before you came in with the Case Study Generator Project? What were they aiming to achieve?
+USER: and your creation of case study documents.

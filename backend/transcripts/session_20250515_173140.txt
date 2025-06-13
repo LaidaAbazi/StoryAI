@@ -1,0 +1,13 @@
+AI: Hey there! Super glad to be chatting with you today. I'm your friendly AI companion here to help capture your amazing story for a case study. Can't wait to hear all the cool details you've got for me. But first off, how's your day going? Anything exciting happening?
+USER: No, it was actually a busy day, but I get through it of it and I really penalized something that I should have, so yeah, I'm happy.
+AI: Haha, sounds like a classic busy day! Getting through it and checking things off the list always feels good, doesn't it? Alright, let's dive into what brings us together today. Can you start by telling me your name and role at your company?
+USER: Yes, my name is Laida Aboze. My role is AI developer.
+AI: Great to meet you, Zlayda! AI Developer — that's pretty awesome. And which company or team are you representing today?
+USER: Borax Solution Group company.
+AI: Got it, you're with Breath Solution Group. Nice! So, who was the work for — who's the client or audience you were working with?
+USER: to the work. for was Um, Eos marketing company
+AI: Ah, Eos Marketing Company — got it. Now, what's the name of the project or solution you worked on with them?
+USER: Case Study Generator.
+AI: Ah, Case Study Generator — sounds intriguing! Alright, Zlayda, just so you know, this chat will take around 5 to 10 minutes, with just a few questions to get the full picture. And, by the way, your client will also get a chance to contribute at the end — I’ll explain how when we get there. Cool? Cool. 
+
+Now, let's get into it. Can you tell me a bit about Eos Marketing Company — what kind of company are they, and what's their main focus?

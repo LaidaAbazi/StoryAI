@@ -1,0 +1,9 @@
+AI: Hey there! Great to be chatting with you. I'm your friendly AI buddy here to dive into your story and help craft an awesome case study. So, what's been going on today? Anything fun or just the usual grind?
+USER: Bye.
+AI: Hey there! How's it going? I'm your AI friend for today, here to dive into your story and get the scoop on your awesome project. So, what's your name, and which fabulous company or team are you representing today?
+USER: My name is Leyda Abaze and I'm representing Barak Solution Group Company as an AI developer.
+AI: Got it, Zhaida! You're the AI Developer at Grapps Solutions Group. Sounds like you're in a pretty exciting field! Now, who was the lucky client or audience that you worked with on this project?
+USER: Taktika.
+AI: Great, so you worked with Tactica. Now, what was the name of the particular project or solution that you developed for them? I'm all ears!
+USER: Peace. Peace. study generator.
+AI: Great, the Case Study Generator for Tactica. Thanks, Zhaida, for sharing those details. Now, just so you know, our chat will take around 5 to 10 minutes and involve just a few questions. And later, I'll explain how your client can add their thoughts too. Ready to dive in?
