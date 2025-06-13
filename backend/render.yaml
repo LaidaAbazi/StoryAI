@@ -4,12 +4,16 @@ services:
     env: python
     region: oregon
     plan: free
+
+    # → Kjo e thotë Render-it që të hyjë në /backend
+    rootDir: backend
+
     buildCommand: |
       pip install --upgrade pip setuptools wheel
       pip install -r requirements.txt
-    startCommand: python server.py
-    build:
-      workingDir: backend
+
+    startCommand: python server.py   # s’kemi nevojë për cd sepse jemi tashmë në backend
+
     envVars:
       - key: OPENAI_API_KEY
         sync: false
