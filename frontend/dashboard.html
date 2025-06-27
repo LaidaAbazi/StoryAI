@@ -572,6 +572,169 @@
     .download-video-btn:hover {
       background: #059669;
     }
+    .generate-pictory-video-btn {
+      background: linear-gradient(90deg, #8B5CF6 0%, #7C3AED 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 1.08rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+    }
+    .generate-pictory-video-btn:hover {
+      background: linear-gradient(90deg, #7C3AED 0%, #8B5CF6 100%);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+    }
+    .generate-pictory-video-btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .pictory-video-container {
+      margin: 20px 0;
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .pictory-video-status {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      background: #f8f9fa;
+      text-align: center;
+      color: #8B5CF6;
+      font-weight: 600;
+    }
+    .podcast-section {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+    .podcast-container {
+      margin-top: 10px;
+    }
+    .podcast-status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      background: #fef3c7;
+      color: #92400e;
+      text-align: center;
+      font-weight: 600;
+    }
+    .generate-podcast-btn {
+      background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+    }
+    .generate-podcast-btn:hover {
+      background: linear-gradient(90deg, #34D399 0%, #10B981 100%);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+    .download-podcast-btn:hover {
+      background: linear-gradient(90deg, #1D4ED8 0%, #3B82F6 100%);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+    .download-podcast-btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .name-link {
+      background: #f3f6fa;
+      color: #222;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1.5px solid #b6c2d1;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s, border 0.2s;
+      display: inline-block;
+      margin: 0 1px;
+      box-shadow: none;
+    }
+    .name-link:hover {
+      background: #e6ecf3;
+      border-color: #7da0c4;
+    }
+    .name-link.provider {
+      border-color: #a5b4fc;
+      background: #f5f7ff;
+    }
+    .name-link.client {
+      border-color: #6ee7b7;
+      background: #f3faf7;
+    }
+    .name-link.project {
+      border-color: #c4b5fd;
+      background: #f7f5fa;
+    }
+    .name-link.interviewee {
+      border-color: #fde68a;
+      background: #fdfaf3;
+    }
+    .name-link-input {
+      font-size: 1rem;
+      padding: 2px 6px;
+      border: 1.5px solid #b6c2d1;
+      border-radius: 4px;
+      background: #fff;
+      outline: none;
+      min-width: 80px;
+      margin: 0 2px;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    .name-link-input:focus {
+      border-color: #7da0c4;
+      box-shadow: 0 0 0 2px #e6ecf3;
+    }
+    .rich-text-display {
+      width: 100%;
+      min-height: 220px;
+      border-radius: 10px;
+      background: #f8fafc;
+      font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+      font-size: 1rem;
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      box-shadow: 0 2px 12px 0 rgba(49, 46, 129, 0.08);
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-bottom: 24px;
+      outline: none;
+      color: #1e293b;
+      line-height: 1.6;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      cursor: text;
+    }
+    .rich-text-display:focus {
+      border-color: #06B6D4;
+      box-shadow: 0 4px 20px 0 rgba(6, 182, 212, 0.15);
+    }
+    .rich-text-display:empty::before {
+      content: "Start typing your final story...";
+      color: #9ca3af;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -661,6 +824,7 @@
     let labelFilter = null;
     let currentVideoId = null;
     let videoStatusCheckInterval = null;
+    let podcastStatusCheckInterval = null;  // Add this line
 
     async function fetchUser() {
       const res = await fetch('/api/user');
@@ -895,14 +1059,309 @@
           tabContent.appendChild(clientSummaryRow);
         } else if (activeTab === 2) {
           tabContent.innerHTML = '';
+          
+          // Show loading indicator while initializing
+          const loadingDiv = document.createElement('div');
+          loadingDiv.style.textAlign = 'center';
+          loadingDiv.style.padding = '40px 20px';
+          loadingDiv.style.color = '#64748b';
+          loadingDiv.innerHTML = `
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #06B6D4;"></i>
+          `;
+          tabContent.appendChild(loadingDiv);
+          
+          // Create rich text display instead of simple textarea
+          const richTextDisplay = document.createElement('div');
+          richTextDisplay.className = 'rich-text-display';
+          richTextDisplay.style.width = '100%';
+          richTextDisplay.style.minHeight = '220px';
+          richTextDisplay.style.borderRadius = '10px';
+          richTextDisplay.style.padding = '12px';
+          richTextDisplay.style.fontSize = '1rem';
+          richTextDisplay.style.border = '2px solid #e2e8f0';
+          richTextDisplay.style.backgroundColor = '#f8fafc';
+          richTextDisplay.style.overflowY = 'auto';
+          richTextDisplay.style.whiteSpace = 'pre-wrap';
+          richTextDisplay.style.lineHeight = '1.6';
+          richTextDisplay.contentEditable = true;
+          richTextDisplay.style.display = 'none'; // Hide initially
+          tabContent.appendChild(richTextDisplay);
+
+          // Create hidden textarea for storing raw text
           const textarea = document.createElement('textarea');
-          textarea.style.width = '100%';
-          textarea.style.height = '220px';
-          textarea.style.borderRadius = '10px';
-          textarea.style.padding = '12px';
-          textarea.style.fontSize = '1rem';
+          textarea.id = `finalStoryTextarea-${story.id}`;
+          textarea.style.display = 'none';
           textarea.value = story.final_summary || '';
           tabContent.appendChild(textarea);
+
+          // --- Name-linking logic with global propagation ---
+          let rawText = story.final_summary || '';
+          let nameMap = {};
+          let isInitialized = false; // Flag to prevent re-extraction after editing
+
+          // Extract names from the final summary (ONLY ONCE)
+          async function extractNamesFromFinalSummary() {
+            if (isInitialized) {
+              console.log('⚠️ Names already extracted, skipping re-extraction');
+              return;
+            }
+            
+            try {
+              console.log('🔍 Extracting names from final summary...');
+              const res = await fetch('/extract_names', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ summary: rawText })
+              });
+              const data = await res.json();
+              if (data.status === 'success') {
+                nameMap = {
+                  'Solution Provider': data.names.lead_entity || '',
+                  'Client': data.names.partner_entity || '',
+                  'Project': data.names.project_title || '',
+                  'Interviewee': data.names.interviewee_name || ''
+                };
+                console.log('✅ Names extracted:', nameMap);
+                isInitialized = true;
+                convertNamesToLinks();
+              } else {
+                console.error('❌ Failed to extract names:', data.message);
+                // Show error message to user
+                loadingDiv.innerHTML = `
+                  <div style="margin-bottom: 16px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #ef4444;"></i>
+                  </div>
+                  <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: #dc2626;">Failed to Load</div>
+                  <div style="font-size: 0.95rem;"> Please try refreshing the page.</div>
+                `;
+              }
+            } catch (err) {
+              console.error('❌ Error extracting names:', err);
+              // Show error message to user
+              loadingDiv.innerHTML = `
+                <div style="margin-bottom: 16px;">
+                  <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #ef4444;"></i>
+                </div>
+                <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: #dc2626;">Connection Error</div>
+                <div style="font-size: 0.95rem;">Unable to connect to server. Please check your internet connection.</div>
+              `;
+            }
+          }
+
+          // Convert names to clickable links (uses current nameMap)
+          function convertNamesToLinks() {
+            console.log('🔗 Converting names to links with nameMap:', nameMap);
+            let htmlText = rawText;
+            
+            // Replace provider name (case-insensitive)
+            if (nameMap['Solution Provider']) {
+              const providerRegex = new RegExp(`\\b${escapeRegExp(nameMap['Solution Provider'])}\\b`, 'gi');
+              htmlText = htmlText.replace(providerRegex, (match) => {
+                return `<span class="name-link provider" data-type="Solution Provider" contenteditable="true" data-original="${nameMap['Solution Provider']}">${match}</span>`;
+              });
+            }
+            
+            // Replace client name (case-insensitive)
+            if (nameMap['Client']) {
+              const clientRegex = new RegExp(`\\b${escapeRegExp(nameMap['Client'])}\\b`, 'gi');
+              htmlText = htmlText.replace(clientRegex, (match) => {
+                return `<span class="name-link client" data-type="Client" contenteditable="true" data-original="${nameMap['Client']}">${match}</span>`;
+              });
+            }
+            
+            // Replace project name (case-insensitive)
+            if (nameMap['Project']) {
+              const projectRegex = new RegExp(`${escapeRegExp(nameMap['Project'])}(?![\\w-])`, 'gi');
+              htmlText = htmlText.replace(projectRegex, (match) => {
+                return `<span class="name-link project" data-type="Project" contenteditable="true" data-original="${nameMap['Project']}">${match}</span>`;
+              });
+            }
+            
+            // Replace interviewee name (case-insensitive)
+            if (nameMap['Interviewee']) {
+              const intervieweeRegex = new RegExp(`\\b${escapeRegExp(nameMap['Interviewee'])}\\b`, 'gi');
+              htmlText = htmlText.replace(intervieweeRegex, (match) => {
+                return `<span class="name-link interviewee" data-type="Interviewee" contenteditable="true" data-original="${nameMap['Interviewee']}">${match}</span>`;
+              });
+            }
+            
+            richTextDisplay.innerHTML = htmlText;
+            addNameLinkEditing();
+            console.log('✅ Names converted to links successfully');
+            
+            // Hide loading and show the rich text display
+            loadingDiv.style.display = 'none';
+            richTextDisplay.style.display = 'block';
+            
+            // Show success message briefly
+            const successMsg = document.createElement('div');
+            successMsg.style.textAlign = 'center';
+            successMsg.style.padding = '8px 16px';
+            successMsg.style.backgroundColor = '#d1fae5';
+            successMsg.style.color = '#065f46';
+            successMsg.style.borderRadius = '6px';
+            successMsg.style.fontSize = '0.9rem';
+            successMsg.style.fontWeight = '600';
+            successMsg.style.marginBottom = '16px';
+            
+            // Remove this line - richTextDisplay is already in the DOM
+            // tabContent.insertBefore(richTextDisplay);
+          }
+
+          // Helper function to escape regex special characters
+          function escapeRegExp(string) {
+            if (!string) return '';
+            const escaped = string.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&');
+            return escaped.replace(/\s+/g, '\\s+');
+          }
+
+          // Add event listeners to name links
+          function addNameLinkEditing() {
+            const links = richTextDisplay.querySelectorAll('.name-link');
+            console.log(`🔗 Adding editing listeners to ${links.length} name links`);
+            
+            links.forEach(link => {
+              // Remove any existing listeners to prevent duplicates
+              link.onmousedown = null;
+              link.onclick = null;
+              
+              link.onmousedown = function(e) {
+                e.preventDefault();
+              };
+              
+              link.onclick = function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                
+                const type = link.getAttribute('data-type');
+                const oldName = link.textContent;
+                console.log(`✏️ Editing name: "${oldName}" (type: ${type})`);
+                
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = oldName;
+                input.className = 'name-link-input';
+                input.style.width = (oldName.length + 2) + 'ch';
+                input.style.fontSize = '1rem';
+                input.style.padding = '2px 6px';
+                input.style.border = '2px solid #06B6D4';
+                input.style.borderRadius = '4px';
+                input.style.backgroundColor = '#fff';
+                input.style.outline = 'none';
+                
+                link.replaceWith(input);
+                setTimeout(() => input.focus(), 0);
+                input.select();
+
+                function saveEdit() {
+                  const newName = input.value.trim();
+                  console.log(`💾 Saving edit: "${oldName}" → "${newName}"`);
+                  
+                  if (newName && newName !== oldName) {
+                    try {
+                      // Replace all occurrences in rawText (case-insensitive)
+                      const regex = new RegExp(escapeRegExp(oldName), 'gi');
+                      rawText = rawText.replace(regex, newName);
+                      
+                      // Update the nameMap to the new name
+                      nameMap[type] = newName;
+                      console.log(`✅ Updated nameMap[${type}] = "${newName}"`);
+                      
+                      // Instantly re-render with the new nameMap
+                      convertNamesToLinks();
+                      
+                      // Schedule auto-save
+                      scheduleAutoSave();
+                      
+                      console.log(`✅ Name edit completed: "${oldName}" → "${newName}"`);
+                    } catch (error) {
+                      console.error('❌ Error saving name edit:', error);
+                      // Fallback: restore the original link
+                      input.replaceWith(link);
+                      addNameLinkEditing();
+                    }
+                  } else {
+                    console.log('ℹ️ No changes made, restoring original');
+                    input.replaceWith(link);
+                    addNameLinkEditing();
+                  }
+                }
+                
+                input.addEventListener('blur', saveEdit);
+                input.addEventListener('keydown', function (ev) {
+                  if (ev.key === 'Enter') {
+                    ev.preventDefault();
+                    input.blur();
+                  } else if (ev.key === 'Escape') {
+                    ev.preventDefault();
+                    input.value = oldName;
+                    input.blur();
+                  }
+                });
+              };
+            });
+          }
+
+          // Update display with new names (legacy function, now just calls convertNamesToLinks)
+          function updateDisplay() {
+            console.log('🔄 Updating display...');
+            convertNamesToLinks();
+          }
+
+          // Add auto-save functionality for the final story textarea
+          let autoSaveTimeout;
+          function scheduleAutoSave() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(async () => {
+              await saveFinalSummary();
+            }, 500); // Auto-save after 1 second of inactivity
+          }
+
+          async function saveFinalSummary() {
+            try {
+              // Always use rawText (which contains all the latest edits) instead of innerText
+              const currentText = rawText;
+              textarea.value = currentText;
+              
+              console.log('💾 Auto-saving final summary...');
+              const res = await fetch('/save_final_summary', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  case_study_id: story.id,
+                  final_summary: currentText
+                })
+              });
+              
+              const result = await res.json();
+              if (result.status === 'success') {
+                console.log('✅ Final story auto-saved successfully');
+                // Update the story in the local array
+                const storyIndex = allStories.findIndex(s => s.id === story.id);
+                if (storyIndex !== -1) {
+                  allStories[storyIndex].final_summary = currentText;
+                }
+              } else {
+                console.error('❌ Final story auto-save failed:', result.message);
+              }
+            } catch (err) {
+              console.error('❌ Final story auto-save error:', err);
+            }
+          }
+
+          // Add input event listener for auto-save
+          richTextDisplay.addEventListener('input', () => {
+            scheduleAutoSave();
+          });
+
+          // Add blur event listener for immediate save
+          richTextDisplay.addEventListener('blur', async () => {
+            clearTimeout(autoSaveTimeout);
+            await saveFinalSummary();
+          });
+
+          // Initialize names and display
+          extractNamesFromFinalSummary();
 
           // LinkedIn post section
           const linkedinSection = document.createElement('div');
@@ -968,6 +1427,481 @@
           linkedinSection.appendChild(linkedinBtn);
           tabContent.appendChild(linkedinSection);
 
+          // --- PODCAST SECTION ---
+          const podcastSection = document.createElement('div');
+          podcastSection.className = 'podcast-section';
+          podcastSection.style.marginTop = '20px';
+          podcastSection.style.padding = '16px';
+          podcastSection.style.borderRadius = '10px';
+          podcastSection.style.backgroundColor = '#f8fafc';
+          podcastSection.style.border = '1px solid #e2e8f0';
+
+          const podcastHeader = document.createElement('h3');
+          podcastHeader.textContent = 'Podcast Audio';
+          podcastHeader.style.marginBottom = '12px';
+          podcastHeader.style.color = '#1e293b';
+          podcastSection.appendChild(podcastHeader);
+
+          // Debug log to verify podcast data
+          console.log('Podcast data for this story:', {
+            podcast_url: story.podcast_url,
+            podcast_job_id: story.podcast_job_id,
+            podcast_status: story.podcast_status
+          });
+
+          // Check if podcast URL exists and is valid
+          const hasPodcastUrl = story.podcast_url && story.podcast_url.trim() !== '';
+          console.log('Has podcast URL:', hasPodcastUrl, 'URL:', story.podcast_url);
+
+          if (hasPodcastUrl) {
+            console.log('Rendering podcast audio player for URL:', story.podcast_url);
+            
+            // Create success indicator
+            const successIndicator = document.createElement('div');
+            successIndicator.style.marginBottom = '12px';
+            successIndicator.style.padding = '8px 12px';
+            successIndicator.style.backgroundColor = '#d1fae5';
+            successIndicator.style.color = '#065f46';
+            successIndicator.style.borderRadius = '6px';
+            successIndicator.style.fontSize = '0.9rem';
+            successIndicator.style.fontWeight = '600';
+            successIndicator.innerHTML = '✅ Podcast Ready!';
+            podcastSection.appendChild(successIndicator);
+            
+            // Show the podcast if it exists
+            const podcastContainer = document.createElement('div');
+            podcastContainer.className = 'podcast-container';
+            podcastContainer.style.backgroundColor = '#fff';
+            podcastContainer.style.padding = '16px';
+            podcastContainer.style.borderRadius = '12px';
+            podcastContainer.style.border = '2px solid #e2e8f0';
+            podcastContainer.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+
+            const audioElement = document.createElement('audio');
+            audioElement.style.width = '100%';
+            audioElement.style.marginTop = '10px';
+            audioElement.style.marginBottom = '12px';
+            audioElement.style.borderRadius = '8px';
+            audioElement.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+            audioElement.controls = true;
+            audioElement.crossOrigin = 'anonymous'; // Add CORS support
+            audioElement.preload = 'metadata';
+
+            // Add loading indicator
+            const loadingIndicator = document.createElement('div');
+            loadingIndicator.style.padding = '12px';
+            loadingIndicator.style.backgroundColor = '#f0f9ff';
+            loadingIndicator.style.border = '1px solid #bae6fd';
+            loadingIndicator.style.borderRadius = '8px';
+            loadingIndicator.style.textAlign = 'center';
+            loadingIndicator.style.color = '#0369a1';
+            loadingIndicator.style.fontSize = '0.9rem';
+            loadingIndicator.innerHTML = '🔄 Loading podcast audio...';
+            podcastContainer.appendChild(loadingIndicator);
+
+            // Add comprehensive error handling for audio
+            let audioLoadAttempted = false;
+            let audioLoadFailed = false;
+
+            audioElement.onerror = (e) => {
+              console.error('Audio failed to load via proxy:', `/api/podcast_audio/${story.id}`, e);
+              audioLoadFailed = true;
+              loadingIndicator.style.display = 'none';
+              showAudioError();
+            };
+
+            audioElement.onloadstart = () => {
+              console.log('Audio loading started');
+              audioLoadAttempted = true;
+              loadingIndicator.innerHTML = '🔄 Loading podcast audio...';
+            };
+
+            audioElement.oncanplay = () => {
+              console.log('Audio can play successfully');
+              audioLoadFailed = false;
+              loadingIndicator.style.display = 'none';
+            };
+
+            audioElement.onabort = () => {
+              console.log('Audio loading aborted');
+              if (audioLoadAttempted) {
+                audioLoadFailed = true;
+                loadingIndicator.style.display = 'none';
+                showAudioError();
+              }
+            };
+
+            audioElement.onstalled = () => {
+              console.log('Audio loading stalled');
+              if (audioLoadAttempted) {
+                audioLoadFailed = true;
+                loadingIndicator.style.display = 'none';
+                showAudioError();
+              }
+            };
+
+            // Function to show audio error with retry option
+            function showAudioError() {
+              audioElement.style.display = 'none';
+              
+              // Remove any existing error message
+              const existingError = podcastContainer.querySelector('.audio-error-message');
+              if (existingError) {
+                existingError.remove();
+              }
+
+              const errorContainer = document.createElement('div');
+              errorContainer.className = 'audio-error-message';
+              errorContainer.style.padding = '16px';
+              errorContainer.style.backgroundColor = '#fef2f2';
+              errorContainer.style.border = '1px solid #fecaca';
+              errorContainer.style.borderRadius = '8px';
+              errorContainer.style.marginBottom = '12px';
+
+              const errorIcon = document.createElement('div');
+              errorIcon.style.fontSize = '2rem';
+              errorIcon.style.marginBottom = '8px';
+              errorIcon.textContent = '⚠️';
+              errorContainer.appendChild(errorIcon);
+
+              const errorTitle = document.createElement('div');
+              errorTitle.style.fontWeight = '600';
+              errorTitle.style.color = '#dc2626';
+              errorTitle.style.marginBottom = '8px';
+              errorTitle.textContent = 'Audio failed to load';
+              errorContainer.appendChild(errorTitle);
+
+              const errorMessage = document.createElement('div');
+              errorMessage.style.color = '#6b7280';
+              errorMessage.style.fontSize = '0.9rem';
+              errorMessage.style.marginBottom = '12px';
+              errorMessage.textContent = 'The podcast audio couldn\'t be loaded through our server. This might be due to network issues or the audio file being temporarily unavailable.';
+              errorContainer.appendChild(errorMessage);
+
+              const retryButton = document.createElement('button');
+              retryButton.textContent = '🔄 Retry Loading Audio';
+              retryButton.style.backgroundColor = '#3B82F6';
+              retryButton.style.color = '#fff';
+              retryButton.style.border = 'none';
+              retryButton.style.borderRadius = '6px';
+              retryButton.style.padding = '8px 16px';
+              retryButton.style.fontSize = '0.9rem';
+              retryButton.style.cursor = 'pointer';
+              retryButton.style.marginRight = '8px';
+              retryButton.onclick = () => {
+                errorContainer.remove();
+                audioElement.style.display = 'block';
+                loadingIndicator.style.display = 'block';
+                audioLoadAttempted = false;
+                audioLoadFailed = false;
+                // Try proxy endpoint first
+                audioElement.src = `/api/podcast_audio/${story.id}`;
+              };
+              errorContainer.appendChild(retryButton);
+
+              const proxyButton = document.createElement('button');
+              proxyButton.textContent = '🔗 Try Direct URL';
+              proxyButton.style.backgroundColor = '#8B5CF6';
+              proxyButton.style.color = '#fff';
+              proxyButton.style.border = 'none';
+              proxyButton.style.borderRadius = '6px';
+              proxyButton.style.padding = '8px 16px';
+              proxyButton.style.fontSize = '0.9rem';
+              proxyButton.style.cursor = 'pointer';
+              proxyButton.style.marginRight = '8px';
+              proxyButton.onclick = () => {
+                errorContainer.remove();
+                audioElement.style.display = 'block';
+                loadingIndicator.style.display = 'block';
+                audioLoadAttempted = false;
+                audioLoadFailed = false;
+                // Try the original URL as fallback
+                audioElement.src = `/api/podcast_audio/${story.id}`;;
+              };
+              errorContainer.appendChild(proxyButton);
+
+              const directPlayButton = document.createElement('button');
+              directPlayButton.textContent = '🎵 Play in New Tab';
+              directPlayButton.style.backgroundColor = '#10B981';
+              directPlayButton.style.color = '#fff';
+              directPlayButton.style.border = 'none';
+              directPlayButton.style.borderRadius = '6px';
+              directPlayButton.style.padding = '8px 16px';
+              directPlayButton.style.fontSize = '0.9rem';
+              directPlayButton.style.cursor = 'pointer';
+              directPlayButton.onclick = () => {
+                window.open(story.podcast_url, '_blank');
+              };
+              errorContainer.appendChild(directPlayButton);
+
+              podcastContainer.appendChild(errorContainer);
+            }
+
+            // Set the audio source after setting up all event handlers
+            audioElement.src = `/api/podcast_audio/${story.id}`;
+
+            // Test the audio URL availability
+            async function testAudioUrl(url) {
+              try {
+                const response = await fetch(url, { method: 'HEAD' });
+                return response.ok;
+              } catch (error) {
+                console.log('Audio URL test failed:', error);
+                return false;
+              }
+            }
+
+            // Test the proxy URL and show appropriate feedback
+            testAudioUrl(`/api/podcast_audio/${story.id}`).then(isAvailable => {
+              if (!isAvailable) {
+                console.log('Proxy audio URL not available, showing fallback options');
+                loadingIndicator.style.display = 'none';
+                showAudioError();
+              }
+            });
+
+            // Add a timeout to detect if audio fails to load
+            setTimeout(() => {
+              if (audioLoadAttempted && audioLoadFailed) {
+                loadingIndicator.style.display = 'none';
+                showAudioError();
+              }
+            }, 5000); // 5 second timeout
+
+            podcastContainer.appendChild(audioElement);
+
+            // Add download button
+            const downloadContainer = document.createElement('div');
+            downloadContainer.style.display = 'flex';
+            downloadContainer.style.gap = '12px';
+            downloadContainer.style.alignItems = 'center';
+            downloadContainer.style.marginTop = '12px';
+
+            const downloadBtn = document.createElement('button');
+            downloadBtn.className = 'action-btn download-podcast-btn';
+            downloadBtn.innerHTML = '<i class="fas fa-download"></i> Download Podcast';
+            downloadBtn.style.background = 'linear-gradient(90deg, #3B82F6 0%, #1D4ED8 100%)';
+            downloadBtn.style.color = '#fff';
+            downloadBtn.style.border = 'none';
+            downloadBtn.style.borderRadius = '8px';
+            downloadBtn.style.padding = '12px 20px';
+            downloadBtn.style.fontSize = '1rem';
+            downloadBtn.style.fontWeight = '600';
+            downloadBtn.style.cursor = 'pointer';
+            downloadBtn.style.transition = 'all 0.2s';
+            downloadBtn.style.display = 'flex';
+            downloadBtn.style.alignItems = 'center';
+            downloadBtn.style.gap = '8px';
+            downloadBtn.style.boxShadow = '0 2px 6px rgba(59, 130, 246, 0.15)';
+            downloadBtn.onclick = async () => {
+              try {
+                // Test if the URL is accessible
+                const response = await fetch(story.podcast_url, { method: 'HEAD' });
+                if (!response.ok) {
+                  alert('Download failed: Audio file is not accessible. Please try the "Open in New Tab" option instead.');
+                  return;
+                }
+                
+              const link = document.createElement('a');
+              link.href = story.podcast_url;
+              link.download = `podcast-${story.id}.mp3`;
+              link.target = '_blank';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              } catch (error) {
+                console.error('Download error:', error);
+                alert('Download failed. Please try the "Open in New Tab" option instead.');
+              }
+            };
+
+            const directLink = document.createElement('a');
+            directLink.href = story.podcast_url;
+            directLink.target = '_blank';
+            directLink.textContent = '🎵 Open in New Tab';
+            directLink.style.color = '#3B82F6';
+            directLink.style.textDecoration = 'none';
+            directLink.style.fontSize = '1rem';
+            directLink.style.fontWeight = '500';
+            directLink.style.padding = '12px 20px';
+            directLink.style.border = '2px solid #3B82F6';
+            directLink.style.borderRadius = '8px';
+            directLink.style.transition = 'all 0.2s';
+            directLink.onmouseover = () => {
+              directLink.style.backgroundColor = '#3B82F6';
+              directLink.style.color = '#fff';
+            };
+            directLink.onmouseout = () => {
+              directLink.style.backgroundColor = 'transparent';
+              directLink.style.color = '#3B82F6';
+            };
+
+            downloadContainer.appendChild(downloadBtn);
+            downloadContainer.appendChild(directLink);
+            podcastContainer.appendChild(downloadContainer);
+            podcastSection.appendChild(podcastContainer);
+
+            // Show podcast script if available
+            if (story.podcast_script) {
+              const scriptContainer = document.createElement('div');
+              scriptContainer.style.marginTop = '16px';
+              scriptContainer.style.padding = '16px';
+              scriptContainer.style.backgroundColor = '#fff';
+              scriptContainer.style.borderRadius = '12px';
+              scriptContainer.style.border = '2px solid #e2e8f0';
+              scriptContainer.style.maxHeight = '250px';
+              scriptContainer.style.overflowY = 'auto';
+              scriptContainer.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+
+              const scriptHeader = document.createElement('h4');
+              scriptHeader.textContent = '📝 Podcast Script';
+              scriptHeader.style.marginBottom = '12px';
+              scriptHeader.style.color = '#1e293b';
+              scriptHeader.style.fontSize = '1.1rem';
+              scriptHeader.style.fontWeight = '600';
+              scriptContainer.appendChild(scriptHeader);
+
+              const scriptContent = document.createElement('div');
+              scriptContent.style.whiteSpace = 'pre-wrap';
+              scriptContent.style.fontSize = '0.95rem';
+              scriptContent.style.color = '#64748b';
+              scriptContent.style.lineHeight = '1.6';
+              scriptContent.textContent = story.podcast_script;
+              scriptContainer.appendChild(scriptContent);
+
+              podcastSection.appendChild(scriptContainer);
+            }
+          } else if (story.podcast_job_id && story.podcast_status) {
+            // Show podcast status if podcast is being generated
+            const podcastStatus = document.createElement('div');
+            podcastStatus.className = 'podcast-status';
+            podcastStatus.id = `podcastStatus-${story.id}`;
+            podcastStatus.textContent = `Podcast is ${story.podcast_status}...`;
+            podcastStatus.style.marginTop = '10px';
+            podcastStatus.style.padding = '10px';
+            podcastStatus.style.borderRadius = '6px';
+            podcastStatus.style.backgroundColor = '#fef3c7';
+            podcastStatus.style.color = '#92400e';
+            podcastStatus.style.textAlign = 'center';
+            podcastStatus.style.fontWeight = '600';
+            podcastSection.appendChild(podcastStatus);
+            
+            // Start polling if podcast is still processing
+            if (story.podcast_status === 'processing' || story.podcast_status === 'pending') {
+              console.log(`Starting automatic podcast status polling for story ${story.id}`);
+              startPodcastStatusCheck(story.podcast_job_id, story.id);
+            }
+            
+            // Show retry button if podcast failed and hasn't been retried yet
+            if (story.podcast_status === 'failed' && !story.podcast_retried) {
+              const retryContainer = document.createElement('div');
+              retryContainer.style.marginTop = '12px';
+              retryContainer.style.textAlign = 'center';
+              
+              const retryBtn = document.createElement('button');
+              retryBtn.className = 'action-btn retry-podcast-btn';
+              retryBtn.id = `retryPodcastBtn-${story.id}`;
+              retryBtn.innerHTML = '<i class="fas fa-redo"></i> Retry Podcast Generation';
+              retryBtn.style.background = 'linear-gradient(90deg, #F59E0B 0%, #D97706 100%)';
+              retryBtn.style.color = '#fff';
+              retryBtn.style.border = 'none';
+              retryBtn.style.borderRadius = '8px';
+              retryBtn.style.padding = '10px 20px';
+              retryBtn.style.fontSize = '0.9rem';
+              retryBtn.style.fontWeight = '600';
+              retryBtn.style.cursor = 'pointer';
+              retryBtn.style.transition = 'all 0.2s';
+              retryBtn.style.display = 'flex';
+              retryBtn.style.alignItems = 'center';
+              retryBtn.style.gap = '8px';
+              retryBtn.style.margin = '0 auto';
+              retryBtn.style.boxShadow = '0 2px 6px rgba(245, 158, 11, 0.15)';
+              
+              retryBtn.onclick = async () => {
+                try {
+                  // Disable the retry button
+                  retryBtn.disabled = true;
+                  retryBtn.textContent = 'Retrying...';
+                  retryBtn.style.opacity = '0.6';
+                  
+                  // Update status to show retrying
+                  podcastStatus.textContent = 'Retrying podcast generation...';
+                  podcastStatus.style.backgroundColor = '#fef3c7';
+                  podcastStatus.style.color = '#92400e';
+                  
+                  // Make API call to generate podcast
+                  const response = await fetch('/api/generate_podcast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ case_study_id: story.id })
+                  });
+
+                  const data = await response.json();
+
+                  if (data.status === 'success') {
+                    // Mark as retried in memory
+                    const storyIndex = allStories.findIndex(s => s.id === story.id);
+                    if (storyIndex !== -1) {
+                      allStories[storyIndex].podcast_retried = true;
+                    }
+                    
+                    podcastStatus.textContent = 'Podcast generation started...';
+                    startPodcastStatusCheck(data.job_id, story.id);
+                    
+                    // Remove the retry button
+                    retryContainer.remove();
+                  } else {
+                    podcastStatus.textContent = `Retry failed: ${data.error}`;
+                    podcastStatus.style.backgroundColor = '#fee2e2';
+                    podcastStatus.style.color = '#dc2626';
+                    
+                    // Re-enable the retry button
+                    retryBtn.disabled = false;
+                    retryBtn.textContent = 'Retry Podcast Generation';
+                    retryBtn.style.opacity = '1';
+                  }
+
+                } catch (error) {
+                  console.error('Error retrying podcast:', error);
+                  podcastStatus.textContent = `Retry failed: ${error.message}`;
+                  podcastStatus.style.backgroundColor = '#fee2e2';
+                  podcastStatus.style.color = '#dc2626';
+                  
+                  // Re-enable the retry button
+                  retryBtn.disabled = false;
+                  retryBtn.textContent = 'Retry Podcast Generation';
+                  retryBtn.style.opacity = '1';
+                }
+              };
+              
+              retryContainer.appendChild(retryBtn);
+              podcastSection.appendChild(retryContainer);
+            }
+          } else {
+            // Show the generate button if no podcast exists
+            const podcastBtn = document.createElement('button');
+            podcastBtn.className = 'action-btn generate-podcast-btn';
+            podcastBtn.id = `podcastBtn-${story.id}`;
+            podcastBtn.innerHTML = '<i class="fas fa-microphone"></i> Generate Podcast';
+            podcastBtn.style.background = 'linear-gradient(90deg, #10B981 0%, #34D399 100%)';
+            podcastBtn.style.color = '#fff';
+            podcastBtn.style.border = 'none';
+            podcastBtn.style.borderRadius = '10px';
+            podcastBtn.style.padding = '12px 24px';
+            podcastBtn.style.fontSize = '1rem';
+            podcastBtn.style.fontWeight = '600';
+            podcastBtn.style.cursor = 'pointer';
+            podcastBtn.style.transition = 'all 0.2s';
+            podcastBtn.style.display = 'flex';
+            podcastBtn.style.alignItems = 'center';
+            podcastBtn.style.gap = '8px';
+            podcastBtn.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.15)';
+            podcastBtn.onclick = () => generatePodcast(story.id);
+            podcastSection.appendChild(podcastBtn);
+          }
+
+          tabContent.appendChild(podcastSection);
+
           // --- VIDEO SECTION ---
           const videoSection = document.createElement('div');
           videoSection.className = 'video-section';
@@ -1021,6 +1955,63 @@
 
           tabContent.appendChild(videoSection);
 
+          // --- PICTORY VIDEO SECTION ---
+          const pictoryVideoSection = document.createElement('div');
+          pictoryVideoSection.className = 'pictory-video-section';
+          pictoryVideoSection.style.marginTop = '20px';
+
+          // Debug log to verify pictory video data
+          console.log('Pictory video data for this story:', {
+            pictory_video_url: story.pictory_video_url,
+            pictory_storyboard_id: story.pictory_storyboard_id,
+            pictory_video_status: story.pictory_video_status
+          });
+
+          if (story.pictory_video_url) {
+            // Show the Pictory video if it exists
+            const pictoryVideoContainer = document.createElement('div');
+            pictoryVideoContainer.className = 'pictory-video-container';
+
+            const pictoryVideoElement = document.createElement('video');
+            pictoryVideoElement.style.width = '100%';
+            pictoryVideoElement.style.height = '450px';
+            pictoryVideoElement.style.border = 'none';
+            pictoryVideoElement.style.borderRadius = '8px';
+            pictoryVideoElement.controls = true;
+            pictoryVideoElement.src = story.pictory_video_url;
+
+            pictoryVideoContainer.appendChild(pictoryVideoElement);
+            pictoryVideoSection.appendChild(pictoryVideoContainer);
+          } else if (story.pictory_storyboard_id && story.pictory_video_status) {
+            // Show Pictory video status if video is being generated
+            const pictoryVideoContainer = document.createElement('div');
+            pictoryVideoContainer.className = 'pictory-video-container';
+            pictoryVideoContainer.id = `pictoryVideoContainer-${story.id}`;
+
+            const pictoryVideoStatus = document.createElement('div');
+            pictoryVideoStatus.className = 'pictory-video-status';
+            pictoryVideoStatus.id = `pictoryVideoStatus-${story.id}`;
+            pictoryVideoStatus.textContent = `Pictory video is ${story.pictory_video_status}...`;
+
+            pictoryVideoContainer.appendChild(pictoryVideoStatus);
+            pictoryVideoSection.appendChild(pictoryVideoContainer);
+
+            // Start checking Pictory video status if it's still processing
+            if (story.pictory_video_status === 'storyboard_processing' || story.pictory_video_status === 'rendering') {
+              startPictoryVideoStatusCheck(story.pictory_storyboard_id, story.id);
+            }
+          } else {
+            // Show the generate Pictory video button if no video exists
+            const pictoryVideoBtn = document.createElement('button');
+            pictoryVideoBtn.className = 'action-btn generate-pictory-video-btn';
+            pictoryVideoBtn.id = `pictoryVideoBtn-${story.id}`;
+            pictoryVideoBtn.innerHTML = '<i class="fas fa-film"></i> Generate Short-Form Video';
+            pictoryVideoBtn.onclick = () => generatePictoryVideo(story.id);
+            pictoryVideoSection.appendChild(pictoryVideoBtn);
+          }
+
+          tabContent.appendChild(pictoryVideoSection);
+
           // --- BUTTON ROW (Save/Download PDF) ---
           const btnRow = document.createElement('div');
           btnRow.style.display = 'flex';
@@ -1032,20 +2023,83 @@
           saveBtn.textContent = 'Save Final Changes';
           saveBtn.onclick = async () => {
             const summary = tabContent.querySelector('textarea').value;
-            const res = await fetch('/generate_full_case_study', {
+            const res = await fetch('/save_final_summary', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ case_study_id: story.id, final_summary: summary })
+              body: JSON.stringify({ 
+                case_study_id: story.id, 
+                final_summary: summary 
+              })
             });
             const data = await res.json();
             if (data.status === 'success') {
               alert('Final story saved!');
-              await fetchAndRender();
+              // Update the story in the local array
+              const storyIndex = allStories.findIndex(s => s.id === story.id);
+              if (storyIndex !== -1) {
+                allStories[storyIndex].final_summary = summary;
+              }
             } else {
               alert('Failed to save: ' + data.message);
             }
           };
-          btnRow.appendChild(saveBtn);
+          tabContent.appendChild(saveBtn);
+
+          // Add Save as Word button
+          const saveWordBtn = document.createElement('button');
+          saveWordBtn.className = 'save-word-btn';
+          saveWordBtn.textContent = 'Save as Word Document';
+          saveWordBtn.style.background = 'linear-gradient(90deg, #2E7D32 0%, #4CAF50 100%)';
+          saveWordBtn.style.color = '#fff';
+          saveWordBtn.style.border = 'none';
+          saveWordBtn.style.borderRadius = '10px';
+          saveWordBtn.style.padding = '12px 24px';
+          saveWordBtn.style.fontSize = '1rem';
+          saveWordBtn.style.fontWeight = '600';
+          saveWordBtn.style.cursor = 'pointer';
+          saveWordBtn.style.transition = 'all 0.2s';
+          saveWordBtn.style.boxShadow = '0 2px 8px rgba(76, 175, 80, 0.15)';
+          saveWordBtn.style.marginLeft = '12px';
+          saveWordBtn.onclick = async () => {
+            try {
+              saveWordBtn.disabled = true;
+              saveWordBtn.textContent = 'Generating Word Document...';
+              
+              const currentText = rawText;
+              const res = await fetch('/save_as_word', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  case_study_id: story.id,
+                  final_summary: currentText,
+                  title: story.title || 'Case Study'
+                })
+              });
+              
+              if (res.ok) {
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${story.title || 'Case Study'}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                alert('Word document saved successfully!');
+              } else {
+                const data = await res.json();
+                alert('Failed to generate Word document: ' + (data.message || 'Unknown error'));
+              }
+            } catch (error) {
+              console.error('Error generating Word document:', error);
+              alert('Error generating Word document: ' + error.message);
+            } finally {
+              saveWordBtn.disabled = false;
+              saveWordBtn.textContent = 'Save as Word Document';
+            }
+          };
+          tabContent.appendChild(saveWordBtn);
 
           if (story.final_summary_pdf_path || story.final_summary) {
             const downloadBtn = document.createElement('button');
@@ -1163,6 +2217,131 @@
         }
         .download-video-btn:hover {
             background: #059669;
+        }
+        .generate-pictory-video-btn {
+            background: linear-gradient(90deg, #8B5CF6 0%, #7C3AED 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 1.08rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+        }
+        .generate-pictory-video-btn:hover {
+            background: linear-gradient(90deg, #7C3AED 0%, #8B5CF6 100%);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+        .generate-pictory-video-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .pictory-video-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .pictory-video-status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            text-align: center;
+            color: #8B5CF6;
+            font-weight: 600;
+        }
+        .download-podcast-btn:hover {
+            background: linear-gradient(90deg, #1D4ED8 0%, #3B82F6 100%);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        .download-podcast-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .name-link {
+            background: #f3f6fa;
+            color: #222;
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 1.5px solid #b6c2d1;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s, border 0.2s;
+            display: inline-block;
+            margin: 0 1px;
+            box-shadow: none;
+        }
+        .name-link:hover {
+            background: #e6ecf3;
+            border-color: #7da0c4;
+        }
+        .name-link.provider {
+            border-color: #a5b4fc;
+            background: #f5f7ff;
+        }
+        .name-link.client {
+            border-color: #6ee7b7;
+            background: #f3faf7;
+        }
+        .name-link.project {
+            border-color: #c4b5fd;
+            background: #f7f5fa;
+        }
+        .name-link.interviewee {
+            border-color: #fde68a;
+            background: #fdfaf3;
+        }
+        .name-link-input {
+            font-size: 1rem;
+            padding: 2px 6px;
+            border: 1.5px solid #b6c2d1;
+            border-radius: 4px;
+            background: #fff;
+            outline: none;
+            min-width: 80px;
+            margin: 0 2px;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .name-link-input:focus {
+            border-color: #7da0c4;
+            box-shadow: 0 0 0 2px #e6ecf3;
+        }
+        .rich-text-display {
+            width: 100%;
+            min-height: 220px;
+            border-radius: 10px;
+            background: #f8fafc;
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+            font-size: 1rem;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 2px 12px 0 rgba(49, 46, 129, 0.08);
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 24px;
+            outline: none;
+            color: #1e293b;
+            line-height: 1.6;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            cursor: text;
+        }
+        .rich-text-display:focus {
+            border-color: #06B6D4;
+            box-shadow: 0 4px 20px 0 rgba(6, 182, 212, 0.15);
+        }
+        .rich-text-display:empty::before {
+            content: "Start typing your final story...";
+            color: #9ca3af;
+            font-style: italic;
         }
       `;
       document.head.appendChild(style);
@@ -1367,15 +2546,18 @@
       const videoElement = document.getElementById(`storyVideo-${storyId}`);
       const videoStatus = document.getElementById(`videoStatus-${storyId}`);
       const videoBtn = document.getElementById(`videoBtn-${storyId}`);
-      const downloadBtn = videoContainer.querySelector('.download-video-btn');
       
-      if (!videoContainer || !videoElement || !videoStatus) return;
+      // Check if elements exist before proceeding
+      if (!videoContainer || !videoStatus) {
+        console.warn(`Video elements not found for story ${storyId}`);
+        return;
+      }
       
       videoContainer.style.display = 'block';
       videoStatus.textContent = 'Checking video status...';
       
       let checkCount = 0;
-      const maxChecks = 60; // 5 minutes maximum (5 seconds * 60)
+      const maxChecks = 300; // 25 minutes maximum (5 seconds * 300)
       
       const checkStatus = async () => {
         try {
@@ -1383,9 +2565,14 @@
           const data = await response.json();
           
           if (data.status === 'completed' && data.video_url) {
-            videoElement.src = data.video_url;
-            videoElement.style.display = 'block';
+            if (videoElement) {
+              videoElement.src = data.video_url;
+              videoElement.style.display = 'block';
+            }
             videoStatus.textContent = 'Video is ready!';
+            
+            // Safely check for download button
+            const downloadBtn = videoContainer.querySelector('.download-video-btn');
             if (downloadBtn) downloadBtn.style.display = 'block';
             if (videoBtn) videoBtn.style.display = 'none';
             
@@ -1435,6 +2622,376 @@
       if (videoElement && videoElement.src) {
         window.open(videoElement.src, '_blank');
       }
+    }
+
+    async function generatePictoryVideo(storyId) {
+      try {
+        const story = allStories.find(s => s.id === storyId);
+        if (!story) {
+          console.error('Story not found:', storyId);
+          return;
+        }
+
+        // Check if Pictory video already exists
+        if (story.pictory_video_url || story.pictory_storyboard_id) {
+          alert('A Pictory video has already been generated for this story.');
+          return;
+        }
+
+        // Ensure required elements exist or create them
+        let pictoryVideoContainer = document.getElementById(`pictoryVideoContainer-${storyId}`);
+        let pictoryVideoStatus = document.getElementById(`pictoryVideoStatus-${storyId}`);
+        let pictoryVideoElement = document.getElementById(`pictoryStoryVideo-${storyId}`);
+        const pictoryVideoBtn = document.getElementById(`pictoryVideoBtn-${storyId}`);
+
+        // If elements don't exist, create and append them
+        if (!pictoryVideoContainer) {
+          pictoryVideoContainer = document.createElement('div');
+          pictoryVideoContainer.id = `pictoryVideoContainer-${storyId}`;
+          pictoryVideoContainer.className = 'pictory-video-container';
+          // Find the pictory video section for this story and append
+          if (pictoryVideoBtn && pictoryVideoBtn.parentElement) {
+            pictoryVideoBtn.parentElement.appendChild(pictoryVideoContainer);
+          } else {
+            // fallback: append to main content
+            document.getElementById('mainContent').appendChild(pictoryVideoContainer);
+          }
+        }
+        if (!pictoryVideoElement) {
+          pictoryVideoElement = document.createElement('video');
+          pictoryVideoElement.id = `pictoryStoryVideo-${storyId}`;
+          pictoryVideoElement.style.width = '100%';
+          pictoryVideoElement.style.height = '450px';
+          pictoryVideoElement.style.border = 'none';
+          pictoryVideoElement.style.borderRadius = '8px';
+          pictoryVideoElement.controls = true;
+          pictoryVideoContainer.appendChild(pictoryVideoElement);
+        }
+        if (!pictoryVideoStatus) {
+          pictoryVideoStatus = document.createElement('div');
+          pictoryVideoStatus.id = `pictoryVideoStatus-${storyId}`;
+          pictoryVideoStatus.className = 'pictory-video-status';
+          pictoryVideoContainer.appendChild(pictoryVideoStatus);
+        }
+
+        // Hide generate button and show video container
+        if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'none';
+        pictoryVideoContainer.style.display = 'block';
+        pictoryVideoStatus.textContent = 'Starting Pictory video generation...';
+
+        const response = await fetch('/api/generate_pictory_video', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ case_study_id: storyId })
+        });
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+          if (data.storyboard_job_id) {
+            pictoryVideoStatus.textContent = 'Creating storyboard...';
+            startPictoryVideoStatusCheck(data.storyboard_job_id, storyId);
+          } else {
+            pictoryVideoStatus.textContent = 'Error: Video generation started but no storyboard ID received';
+            if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'block';
+            pictoryVideoContainer.style.display = 'none';
+          }
+        } else {
+          pictoryVideoStatus.textContent = `Error: ${data.error || 'Failed to generate Pictory video'}`;
+          if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'block';
+          pictoryVideoContainer.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error generating Pictory video:', error);
+        const pictoryVideoStatus = document.getElementById(`pictoryVideoStatus-${storyId}`);
+        const pictoryVideoBtn = document.getElementById(`pictoryVideoBtn-${storyId}`);
+        const pictoryVideoContainer = document.getElementById(`pictoryVideoContainer-${storyId}`);
+        
+        if (pictoryVideoStatus) {
+          pictoryVideoStatus.textContent = `Error: ${error.message}`;
+        }
+        if (pictoryVideoBtn) {
+          pictoryVideoBtn.style.display = 'block';
+        }
+        if (pictoryVideoContainer) {
+          pictoryVideoContainer.style.display = 'none';
+        }
+      }
+    }
+
+    function startPictoryVideoStatusCheck(storyboardJobId, storyId) {
+      const pictoryVideoContainer = document.getElementById(`pictoryVideoContainer-${storyId}`);
+      const pictoryVideoElement = document.getElementById(`pictoryStoryVideo-${storyId}`);
+      const pictoryVideoStatus = document.getElementById(`pictoryVideoStatus-${storyId}`);
+      const pictoryVideoBtn = document.getElementById(`pictoryVideoBtn-${storyId}`);
+      
+      if (!pictoryVideoContainer || !pictoryVideoElement || !pictoryVideoStatus) return;
+      
+      pictoryVideoContainer.style.display = 'block';
+      pictoryVideoStatus.textContent = 'Checking Pictory video status...';
+      
+      let checkCount = 0;
+      const maxChecks = 300; // 25 minutes maximum (5 seconds * 300)
+      
+      const checkStatus = async () => {
+        try {
+          const response = await fetch(`/api/pictory_video_status/${storyboardJobId}`);
+          const data = await response.json();
+          
+          if (data.status === 'completed' && data.video_url) {
+            pictoryVideoElement.src = data.video_url;
+            pictoryVideoElement.style.display = 'block';
+            pictoryVideoStatus.textContent = 'Pictory video is ready!';
+            if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'none';
+            
+            // Update the story in allStories array
+            const storyIndex = allStories.findIndex(s => s.id === storyId);
+            if (storyIndex !== -1) {
+              allStories[storyIndex].pictory_video_url = data.video_url;
+              allStories[storyIndex].pictory_storyboard_id = storyboardJobId;
+              allStories[storyIndex].pictory_video_status = 'completed';
+            }
+            
+            return;
+          } else if (data.status === 'failed') {
+            pictoryVideoStatus.textContent = `Pictory video generation failed: ${data.error || 'Unknown error'}`;
+            if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'block';
+            return;
+          } else if (data.status === 'storyboard_processing') {
+            pictoryVideoStatus.textContent = 'Creating storyboard...';
+            checkCount++;
+            if (checkCount < maxChecks) {
+              setTimeout(checkStatus, 5000);
+            } else {
+              pictoryVideoStatus.textContent = 'Storyboard creation is taking longer than expected. Please try again later.';
+              if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'block';
+            }
+          } else if (data.status === 'rendering') {
+            pictoryVideoStatus.textContent = 'Rendering video...';
+            checkCount++;
+            if (checkCount < maxChecks) {
+              setTimeout(checkStatus, 5000);
+            } else {
+              pictoryVideoStatus.textContent = 'Video rendering is taking longer than expected. Please try again later.';
+              if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'block';
+            }
+          } else {
+            pictoryVideoStatus.textContent = `Pictory video status: ${data.status}`;
+            checkCount++;
+            if (checkCount < maxChecks) {
+              setTimeout(checkStatus, 5000);
+            } else {
+              pictoryVideoStatus.textContent = 'Pictory video generation timeout. Please try again.';
+              if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'block';
+            }
+          }
+        } catch (error) {
+          console.error('Error checking Pictory video status:', error);
+          pictoryVideoStatus.textContent = 'Error checking Pictory video status. Please try again.';
+          if (pictoryVideoBtn) pictoryVideoBtn.style.display = 'block';
+        }
+      };
+      
+      checkStatus();
+    }
+
+    async function generatePodcast(storyId) {
+      try {
+        const story = allStories.find(s => s.id === storyId);
+        if (!story) {
+          console.error('Story not found:', storyId);
+          return;
+        }
+
+        // Check if podcast already exists
+        if (story.podcast_url || story.podcast_job_id) {
+          alert('A podcast has already been generated for this story.');
+          return;
+        }
+
+        // Ensure required elements exist or create them
+        let podcastContainer = document.getElementById(`podcastContainer-${storyId}`);
+        let podcastStatus = document.getElementById(`podcastStatus-${storyId}`);
+        let podcastBtn = document.getElementById(`podcastBtn-${storyId}`);
+
+        // If elements don't exist, create and append them
+        if (!podcastContainer) {
+          podcastContainer = document.createElement('div');
+          podcastContainer.id = `podcastContainer-${storyId}`;
+          podcastContainer.className = 'podcast-container';
+          if (podcastBtn && podcastBtn.parentElement) {
+            podcastBtn.parentElement.appendChild(podcastContainer);
+          }
+        }
+        if (!podcastStatus) {
+          podcastStatus = document.createElement('div');
+          podcastStatus.id = `podcastStatus-${storyId}`;
+          podcastStatus.className = 'podcast-status';
+          podcastStatus.style.marginTop = '10px';
+          podcastStatus.style.padding = '10px';
+          podcastStatus.style.borderRadius = '6px';
+          podcastStatus.style.backgroundColor = '#fef3c7';
+          podcastStatus.style.color = '#92400e';
+          podcastStatus.style.textAlign = 'center';
+          podcastStatus.style.fontWeight = '600';
+          podcastContainer.appendChild(podcastStatus);
+        }
+
+        // Disable the button and show processing status
+        if (podcastBtn) {
+          podcastBtn.disabled = true;
+          podcastBtn.textContent = 'Generating Podcast...';
+        }
+        podcastStatus.textContent = 'Starting podcast generation...';
+
+        // Make API call to generate podcast
+        const response = await fetch('/api/generate_podcast', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ case_study_id: storyId })
+        });
+
+        const data = await response.json();
+
+        if (data.status === 'success') {
+          podcastStatus.textContent = 'Podcast generation started...';
+          startPodcastStatusCheck(data.job_id, storyId);
+        } else {
+          podcastStatus.textContent = `Error: ${data.error}`;
+          podcastStatus.style.backgroundColor = '#fee2e2';
+          podcastStatus.style.color = '#dc2626';
+          if (podcastBtn) {
+            podcastBtn.disabled = false;
+            podcastBtn.textContent = 'Generate Podcast';
+          }
+        }
+
+      } catch (error) {
+        console.error('Error generating podcast:', error);
+        const podcastStatus = document.getElementById(`podcastStatus-${storyId}`);
+        if (podcastStatus) {
+          podcastStatus.textContent = `Error: ${error.message}`;
+          podcastStatus.style.backgroundColor = '#fee2e2';
+          podcastStatus.style.color = '#dc2626';
+        }
+        const podcastBtn = document.getElementById(`podcastBtn-${storyId}`);
+        if (podcastBtn) {
+          podcastBtn.disabled = false;
+          podcastBtn.textContent = 'Generate Podcast';
+        }
+      }
+    }
+
+    function startPodcastStatusCheck(jobId, storyId) {
+      // Clear any existing interval for this specific story
+      if (podcastStatusCheckInterval) {
+        clearInterval(podcastStatusCheckInterval);
+      }
+
+      podcastStatusCheckInterval = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/podcast_status/${jobId}`);
+          const data = await response.json();
+
+          // Check if the status element exists (user might be on a different tab)
+          const podcastStatus = document.getElementById(`podcastStatus-${storyId}`);
+
+          if (data.status === 'completed') {
+            console.log('Podcast completed! Refreshing data...');
+            console.log('Podcast data received:', data);
+            
+            // Update the story data in memory
+            const storyIndex = allStories.findIndex(s => s.id === storyId);
+            if (storyIndex !== -1) {
+              allStories[storyIndex].podcast_status = 'completed';
+              allStories[storyIndex].podcast_url = data.url;
+              allStories[storyIndex].podcast_script = data.script;
+            }
+            
+            // Update the status element if it exists
+            if (podcastStatus) {
+            podcastStatus.textContent = 'Podcast generation completed!';
+            podcastStatus.style.backgroundColor = '#d1fae5';
+            podcastStatus.style.color = '#065f46';
+            }
+            
+            clearInterval(podcastStatusCheckInterval);
+            
+            // Force a complete refresh of the page data
+            await fetchStories();
+            await fetchLabels();
+            renderStories();
+            renderMainContent();
+            
+            // Show a notification to the user
+            if (podcastStatus) {
+              // If user is on the final story tab, show the success message
+              podcastStatus.textContent = 'Podcast generation completed!';
+              podcastStatus.style.backgroundColor = '#d1fae5';
+              podcastStatus.style.color = '#065f46';
+              } else {
+              // If user is on a different tab, show a browser notification
+              if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('Podcast Ready!', {
+                  body: 'Your podcast has been generated successfully.',
+                  icon: '/favicon.ico'
+                });
+              }
+            }
+            
+          } else if (data.status === 'failed') {
+            console.log('Podcast generation failed');
+            
+            // Update the story data in memory
+            const storyIndex = allStories.findIndex(s => s.id === storyId);
+            if (storyIndex !== -1) {
+              allStories[storyIndex].podcast_status = 'failed';
+            }
+            
+            // Update the status element if it exists
+            if (podcastStatus) {
+            podcastStatus.textContent = 'Podcast generation failed.';
+            podcastStatus.style.backgroundColor = '#fee2e2';
+            podcastStatus.style.color = '#dc2626';
+            }
+            
+            clearInterval(podcastStatusCheckInterval);
+            
+            // Show notification for failure
+            if (!podcastStatus && 'Notification' in window && Notification.permission === 'granted') {
+              new Notification('Podcast Generation Failed', {
+                body: 'There was an error generating your podcast.',
+                icon: '/favicon.ico'
+              });
+            }
+            
+          } else {
+            // Still processing - update status if element exists
+            if (podcastStatus) {
+            podcastStatus.textContent = `Podcast is ${data.status}...`;
+            }
+            
+            // Update the story data in memory
+            const storyIndex = allStories.findIndex(s => s.id === storyId);
+            if (storyIndex !== -1) {
+              allStories[storyIndex].podcast_status = data.status;
+            }
+          }
+        } catch (error) {
+          console.error('Error checking podcast status:', error);
+          
+          // Only show error in UI if the element exists
+          const podcastStatus = document.getElementById(`podcastStatus-${storyId}`);
+          if (podcastStatus) {
+            podcastStatus.textContent = 'Error checking status.';
+            podcastStatus.style.backgroundColor = '#fee2e2';
+            podcastStatus.style.color = '#dc2626';
+          }
+          
+          // Don't clear the interval on network errors - keep trying
+          // clearInterval(podcastStatusCheckInterval);
+        }
+      }, 10000); // Check every 10 seconds
     }
   </script>
 </body>

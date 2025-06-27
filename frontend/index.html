@@ -490,6 +490,138 @@
       font-family: 'Montserrat', Arial, sans-serif;
       letter-spacing: 0.01em;
     }
+    /* Name link styles */
+    .name-link {
+      color: #6366f1;
+      text-decoration: none;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.1);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      display: inline-block;
+      outline: none;
+      border: 1px solid transparent;
+      position: relative;
+    }
+    .name-link:hover {
+      background: rgba(99, 102, 241, 0.2);
+      transform: translateY(-1px);
+    }
+    .name-link:focus {
+      border: 1px solid currentColor;
+      background: rgba(99, 102, 241, 0.05);
+      transform: none;
+    }
+    .name-link.provider {
+      color: #8b5cf6;
+      background: rgba(139, 92, 246, 0.1);
+    }
+    .name-link.provider:hover,
+    .name-link.provider:focus {
+      background: rgba(139, 92, 246, 0.2);
+    }
+    .name-link.client {
+      color: #ec4899;
+      background: rgba(236, 72, 153, 0.1);
+    }
+    .name-link.client:hover,
+    .name-link.client:focus {
+      background: rgba(236, 72, 153, 0.2);
+    }
+    .name-link.project {
+      color: #14b8a6;
+      background: rgba(20, 184, 166, 0.1);
+    }
+    .name-link.project:hover,
+    .name-link.project:focus {
+      background: rgba(20, 184, 166, 0.2);
+    }
+    .name-link.interviewee {
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.1);
+    }
+    .name-link.interviewee:hover,
+    .name-link.interviewee:focus {
+      background: rgba(245, 158, 11, 0.2);
+    }
+    /* Prevent line breaks inside name links */
+    .name-link br {
+      display: none;
+    }
+    /* Prevent empty name links */
+    .name-link:empty::after {
+      content: "Enter name";
+      opacity: 0.5;
+      font-style: italic;
+    }
+    /* Show edit indicator on hover */
+    .name-link::after {
+      content: "✎";
+      position: absolute;
+      top: -8px;
+      right: -4px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .name-link:hover::after {
+      opacity: 0.6;
+    }
+    .rich-text-display {
+      width: 700px;
+      min-height: 400px;
+      border-radius: 14px;
+      background: #f8fbff;
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+      font-size: 1.08rem;
+      padding: 18px;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 12px 0 #2563eb22;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-bottom: 24px;
+      outline: none;
+      color: #222;
+      line-height: 1.6;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      cursor: text;
+    }
+    .rich-text-display:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 4px 20px 0 #38bdf844;
+    }
+    .rich-text-display:empty::before {
+      content: "Start typing your case study summary...";
+      color: #9ca3af;
+      font-style: italic;
+    }
+    .rich-text-display p {
+      margin: 1em 0;
+    }
+    .rich-text-display strong {
+      font-weight: 600;
+    }
+    .rich-text-display h1, 
+    .rich-text-display h2, 
+    .rich-text-display h3 {
+      margin: 1.5em 0 0.5em;
+      font-weight: 600;
+    }
+    .rich-text-display ul, 
+    .rich-text-display ol {
+      margin: 1em 0;
+      padding-left: 2em;
+    }
+    .rich-text-display li {
+      margin: 0.5em 0;
+    }
+    .rich-text-display blockquote {
+      margin: 1em 0;
+      padding-left: 1em;
+      border-left: 3px solid #e5e7eb;
+      color: #4b5563;
+    }
   </style>
 </head>
 <body>
@@ -526,21 +658,9 @@
   <div id="summaryLoadingText" style="display:none;text-align:center;font-size:1.15rem;color:#2563eb;font-weight:600;margin-top:32px;margin-bottom:12px;">Please wait a moment while your summary is being prepared...</div>
   <div id="caseStudyEditor" class="case-study-section hidden">
     <label for="editableCaseStudy" style="font-weight:bold;margin-bottom:8px;">Edit Case Study Summary:</label>
-    <div class="summary-input-row">
-      <label style="font-weight:bold;">Solution Provider:
-        <input id="providerNameInput" type="text" />
-      </label>
-      <label style="font-weight:bold;">Client:
-        <input id="clientNameInput" type="text" />
-      </label>
-      <label style="font-weight:bold;">Project:
-        <input id="projectNameInput" type="text" />
-      </label>
-    </div>
-    <textarea id="editableCaseStudy"></textarea>
+    <div id="richTextDisplay" class="rich-text-display"></div>
     <div class="summary-btn-row">
-      <button id="applyNameChangesBtn" class="blue-gradient-btn">Apply Name Changes</button>
-      <button id="saveSummaryBtn" class="blue-gradient-btn">Save Summary</button>
+      <button id="generateClientLinkBtn" class="blue-gradient-btn">Generate Client Link</button>
     </div>
   </div>
   <div id="clientLinkContainer" class="hidden">

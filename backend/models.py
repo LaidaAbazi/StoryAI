@@ -41,6 +41,20 @@ class CaseStudy(Base):
     video_status = Column(String(50), nullable=True)  # Store video generation status
     video_created_at = Column(DateTime(timezone=True), nullable=True)  # When video was created
 
+    # Pictory video fields
+    pictory_storyboard_id = Column(String(100), nullable=True)  # Store Pictory storyboard job ID
+    pictory_render_id = Column(String(100), nullable=True)  # Store Pictory render job ID
+    pictory_video_url = Column(Text, nullable=True)  # Store Pictory video URL
+    pictory_video_status = Column(String(50), nullable=True)  # Store Pictory video generation status
+    pictory_video_created_at = Column(DateTime(timezone=True), nullable=True)  # When Pictory video was created
+
+    # Wondercraft podcast fields
+    podcast_job_id = Column(String(100), nullable=True)  # Store Wondercraft podcast job ID
+    podcast_url = Column(Text, nullable=True)  # Store podcast audio URL
+    podcast_status = Column(String(50), nullable=True)  # Store podcast generation status
+    podcast_created_at = Column(DateTime(timezone=True), nullable=True)  # When podcast was created
+    podcast_script = Column(Text, nullable=True)  # Store the generated podcast script
+
     user = relationship('User', back_populates='case_studies')
     solution_provider_interview = relationship('SolutionProviderInterview', uselist=False, back_populates='case_study')
     client_interview = relationship('ClientInterview', uselist=False, back_populates='case_study')

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory, request, send_file, session
+from flask import Flask, jsonify, send_from_directory, request, send_file, session, Response
 import requests
 import os
 from datetime import datetime, timedelta, UTC  # Add UTC import
@@ -31,11 +31,13 @@ import io
 import base64
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 from flask_migrate import Migrate
-
-
+from flask_cors import CORS
 
 load_dotenv()
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
+
+# Enable CORS for all routes
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # JWT configuration
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "dev_jwt_secret")  # Use a strong secret in production!
@@ -44,8 +46,18 @@ app.config["JWT_TOKEN_LOCATION"] = ["headers"]  # Tell Flask-JWT-Extended to loo
 # HeyGen API configuration
 HEYGEN_API_KEY = os.getenv("HEYGEN_API_KEY")
 HEYGEN_API_BASE_URL = "https://api.heygen.com/v2"
-HEYGEN_AVATAR_ID = "Juan_standing_office_front"
-HEYGEN_VOICE_ID = "1edc5e7338eb4e37b26dc8eb3f9b7e9c"  # Your specified voice ID
+HEYGEN_AVATAR_ID = "Tuba_Casual_Front_public"
+HEYGEN_VOICE_ID = "ea5493f87c244e0e99414ca6bd4af709"  # Your specified voice ID
+
+# Pictory API configuration
+PICTORY_CLIENT_ID = os.getenv("PICTORY_CLIENT_ID")
+PICTORY_CLIENT_SECRET = os.getenv("PICTORY_CLIENT_SECRET")
+PICTORY_USER_ID = os.getenv("PICTORY_USER_ID")
+PICTORY_API_BASE_URL = "https://api.pictory.ai"
+
+# Wondercraft API configuration
+WONDERCRAFT_API_KEY = os.getenv("WONDERCRAFT_API_KEY")
+WONDERCRAFT_API_BASE_URL = "https://api.wondercraft.ai/v1"
 
 init_db()
 
@@ -86,7 +98,110 @@ def clean_text(text):
             .replace("£", "GBP ")
     )
 
-def extract_names_from_case_study(text):
+def extract_names_from_case_study_llm(text):
+    """Extract solution provider name, client name, and project name using OpenAI LLM for maximum accuracy."""
+    try:
+        # Take only the first part of the text to save tokens and focus on the most relevant content
+        lines = text.split('\n')
+        # Get the first 20 lines or first 2000 characters, whichever comes first
+        intro_text = '\n'.join(lines[:20])
+        if len(intro_text) > 2000:
+            intro_text = intro_text[:2000]
+        
+        # Add debugging output
+        print(f"🔍 Analyzing case study excerpt for name extraction:")
+        print(f"📝 Intro text: {intro_text}")
+        
+        prompt = f"""You are a business case study analysis expert. Extract the three key entities from this case study text:
+
+1. **Solution Provider Name** - The company or organization that provided the solution/service
+2. **Client Name** - The company or organization that received the solution/service  
+3. **Project Name** - The name of the project, product, service, or transformation
+
+Look for these patterns in the text:
+- Title format: "[Provider] x [Client]: [Project]"
+- Company names mentioned in the introduction or background
+- Project names, product names, or service names
+- Client references like "client", "customer", "partner"
+- Provider references like "we", "our team", "our company"
+
+Case Study Text:
+{intro_text}
+
+Return ONLY a JSON object with these exact keys:
+{{
+  "lead_entity": "Solution Provider Name",
+  "partner_entity": "Client Name", 
+  "project_title": "Project Name"
+}}
+
+If any entity cannot be found, use "Unknown" for that field. Ensure the JSON is valid and properly formatted."""
+
+        headers = {
+            "Authorization": f"Bearer {OPENAI_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": openai_config["model"],
+            "messages": [{"role": "system", "content": prompt}],
+            "temperature": 0.1,  # Lower temperature for more consistent extraction
+            "max_tokens": 200
+        }
+
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+        result = response.json()
+        
+        print(f"🤖 OpenAI API response: {result}")
+        
+        if "choices" in result and len(result["choices"]) > 0:
+            extracted_text = result["choices"][0]["message"]["content"].strip()
+            print(f"✅ LLM extracted text: '{extracted_text}'")
+            
+            # Try to parse JSON response
+            try:
+                # Clean up the response - remove any markdown formatting
+                extracted_text = extracted_text.replace('```json', '').replace('```', '').strip()
+                names = json.loads(extracted_text)
+                
+                # Validate and clean the extracted names
+                lead_entity = names.get("lead_entity", "Unknown").strip()
+                partner_entity = names.get("partner_entity", "").strip()
+                project_title = names.get("project_title", "Unknown Project").strip()
+                
+                # Handle empty or invalid values
+                if not lead_entity or lead_entity.lower() in ["unknown", "none", "empty"]:
+                    lead_entity = "Unknown"
+                if not partner_entity or partner_entity.lower() in ["unknown", "none", "empty"]:
+                    partner_entity = ""
+                if not project_title or project_title.lower() in ["unknown", "none", "empty"]:
+                    project_title = "Unknown Project"
+                
+                print(f"✅ LLM extracted names - Provider: '{lead_entity}', Client: '{partner_entity}', Project: '{project_title}'")
+                
+                return {
+                    "lead_entity": lead_entity,
+                    "partner_entity": partner_entity,
+                    "project_title": project_title
+                }
+                
+            except json.JSONDecodeError as e:
+                print(f"❌ Failed to parse JSON response: {e}")
+                print(f"Raw response: {extracted_text}")
+                # Fallback to old method
+                return extract_names_from_case_study_fallback(text)
+        else:
+            print(f"❌ OpenAI API error: {result}")
+            # Fallback to old method
+            return extract_names_from_case_study_fallback(text)
+            
+    except Exception as e:
+        print(f"❌ Error extracting names with LLM: {str(e)}")
+        # Fallback to old method
+        return extract_names_from_case_study_fallback(text)
+
+def extract_names_from_case_study_fallback(text):
+    """Fallback method using the original regex-based extraction."""
     # normalize dashes
     text = text.replace("—", "-").replace("–", "-")
     lines = text.splitlines()
@@ -117,6 +232,9 @@ def extract_names_from_case_study(text):
         "project_title": "Unknown Project"
     }
 
+def extract_names_from_case_study(text):
+    """Extract names using LLM with fallback to regex method."""
+    return extract_names_from_case_study_llm(text)
 
 @app.route("/")
 def serve_index():
@@ -451,9 +569,17 @@ def extract_names():
         if not summary:
             return jsonify({"status": "error", "message": "Missing summary"}), 400
 
+        print(f"🎯 Starting name extraction for summary length: {len(summary)}")
         names = extract_names_from_case_study(summary)
-        return jsonify({"status": "success", "names": names})
+        print(f"🎯 Name extraction result: {names}")
+        
+        return jsonify({
+            "status": "success", 
+            "names": names,
+            "method": "llm"  # Add method indicator
+        })
     except Exception as e:
+        print(f"❌ Error in extract_names endpoint: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/generate_client_summary", methods=["POST"])
@@ -659,10 +785,11 @@ def client_interview(token):
         invite.used = True
         session.commit()
 
-        # 4. Extract info
-        provider_name = provider_interview.summary  # or parse for name, or add a name field
-        client_name = case_study.title.split(" x ")[1].split(":")[0] if " x " in case_study.title else ""
-        project_name = case_study.title.split(":")[-1].strip() if ":" in case_study.title else ""
+        # 4. Extract names using LLM for accuracy
+        extracted_names = extract_names_from_case_study(provider_interview.summary)
+        provider_name = extracted_names.get("lead_entity", "Unknown")
+        client_name = extracted_names.get("partner_entity", "")
+        project_name = extracted_names.get("project_title", "Unknown Project")
         provider_summary = provider_interview.summary
 
         return jsonify({
@@ -734,155 +861,127 @@ def generate_full_case_study():
         client_interview = case_study.client_interview
         
 
-        if not provider_interview or not client_interview:
-            return jsonify({"status": "error", "message": "Both summaries are required."}), 400
+        if not provider_interview:
+            return jsonify({"status": "error", "message": "Provider summary is required."}), 400
 
         provider_summary = provider_interview.summary or ""
-        client_summary = client_interview.summary or ""
+        client_summary = client_interview.summary if client_interview else ""
         detected_language = detect_language(provider_summary)
         print(detected_language)
-        full_prompt = f"""
-        You are a top-tier business case study writer, creating professional, detailed, and visually attractive stories for web or PDF (inspired by Storydoc, Adobe, and top SaaS companies).
+        
+        # Check if client story exists
+        has_client_story = bool(client_interview and client_summary.strip())
+        
+        if has_client_story:
+            # Original prompt for when both provider and client stories exist
+            full_prompt = f"""
+            You are a top-tier business case study writer, creating professional, detailed, and visually attractive stories for web or PDF (inspired by Storydoc, Adobe, and top SaaS companies).
+ 
+            IMPORTANT: Write the entire case study in {detected_language}. This includes all sections, quotes, and any additional content.
+ 
+            Your task is to read the full Solution Provider and Client summaries below and merge them into a single, rich, multi-perspective case study. You must synthesize the insights, stories, and data into one engaging narrative.
+ 
+            ONLY RETURN THE FINAL CASE STUDY. Do not include section labels like "Company:", "Title:", "Provider Summary:", "Client Summary:", or any markdown formatting (like **bold**, *, or lists using dashes or asterisks). Do not include any instructions or notes. Simply output the case study in clean prose with visible section breaks using uppercase section headers.
+ 
+            STRUCTURE:
+ 
+            1. LOGO & TITLE BLOCK: Display only the project title with the names of the provider and client.
+            2. HERO STATEMENT / BANNER: A one-sentence summary capturing the most impactful achievement.
+            3. INTRODUCTION
+            4. RESEARCH AND DEVELOPMENT
+            5. CLIENT CONTEXT AND CHALLENGES
+            6. THE SOLUTION
+            7. IMPLEMENTATION & COLLABORATION
+            8. RESULTS & IMPACT
+            9. CUSTOMER/CLIENT REFLECTION (one client quote only)
+            10. TESTIMONIAL/PROVIDER REFLECTION (one provider quote only)
+            11. CALL TO ACTION
+            12. QUOTES HIGHLIGHTS (2–3 extra short quotes)
+ 
+            CONTENT RULES:
+ 
+            - The provider's version is the base; the client's version enhances, corrects, or adds to it.
+            - Use the client's corrected version if numbers or facts differ.
+            - In the "Corrected & Conflicted Replies" section (at the end), list bullets of what the client changed, corrected, or added.
+            - Accuracy is critical: do not guess or invent any facts. Only use what's in the summaries.
+            - Keep each section clear and scannable using ALL CAPS headers (do not bold or use markdown).
+            - Main story includes exactly one quote from each side.
+            - Final "Quotes Highlights" section includes 2–3 additional impactful quotes NOT used earlier.
+            Format each as:
+                - Client: "..."
+                - Provider: "..."
+ 
+            Use realistic business tone and vocabulary. Do not use markdown (** **, *, -). Just clean, web/PDF-friendly output.
+ 
+            Now, here is the input:
+ 
+            Provider Summary:
+            {provider_summary}
+ 
+            Client Summary:
+            {client_summary}
+                        """
+        else:
+            # New prompt for when only provider story exists
+            full_prompt = f"""
+            You are a top-tier business case study writer, creating professional, detailed, and visually attractive stories for web or PDF (inspired by Storydoc, Adobe, and top SaaS companies).
+ 
+            IMPORTANT: Write the entire case study in {detected_language}. This includes all sections, quotes, and any additional content.
+ 
+            Only use the Solution Provider's summary below to write a complete case study. The client did not provide input. Do not label any section with "Provider Summary" or "Title". Do not include markdown (like ** or *). Just write the case study using ALL CAPS section headers and clear business English.
+ 
+            STRUCTURE:
+ 
+            1. LOGO & TITLE BLOCK: Display only the project title with the names of the provider and client.
+            2. HERO STATEMENT / BANNER: A one-sentence summary capturing the most impactful achievement.
+            3. INTRODUCTION
+            4. RESEARCH AND DEVELOPMENT
+            5. CLIENT CONTEXT AND CHALLENGES
+            6. THE SOLUTION
+            7. IMPLEMENTATION & COLLABORATION
+            8. RESULTS & IMPACT
+            9. CUSTOMER/CLIENT REFLECTION (create a realistic client quote based on the provider's input)
+            10. TESTIMONIAL/PROVIDER REFLECTION (one quote from the provider)
+            11. CALL TO ACTION
+            12. QUOTES HIGHLIGHTS (2–3 extra short provider quotes NOT used earlier)
+ 
+            CONTENT RULES:
+ 
+            - Maintain credibility: do not fabricate specific client claims, only rephrase insights from the provider.
+            - Keep each section clear and scannable using ALL CAPS headers (no bolding or markdown).
+            - Include one quote in each reflection section.
+            - At the end, add a "QUOTES HIGHLIGHTS" section with 2–3 additional provider quotes.
+ 
+            Use a realistic tone and avoid generic phrases. Just output the full case study without section labels, markdown, or references to instructions.
+ 
+            Now, here is the input:
+ 
+            Provider Summary:
+            {provider_summary}
+                        
 
-        IMPORTANT: Write the entire case study in {detected_language}. This includes all sections, quotes, and any additional content.
+            **IMPORTANT QUOTE STRUCTURE:**
+            1. **Main Story Quotes** (Only these should appear in the main story):
+                - Include exactly ONE impactful quote from the provider in the "Testimonial/Provider Reflection" section
+                - Create a realistic client quote for the "Customer/Client Reflection" section based on the provider's description
+                - These should be the most powerful, representative quotes
+                - Keep them concise and impactful
 
-        Your job is to read the full Solution Provider and Client summaries below, and **merge them into a single, rich, multi-perspective case study**—not just by pasting, but by synthesizing their insights, stories, and data into one engaging narrative.
+            2. **Additional Quotes** (These will appear ONLY in the meta data):
+                - After the main story, provide a section titled "Quotes Highlights"
+                - Include 2-3 additional meaningful quotes that were NOT used in the main story
+                - These should be different from the main quotes above
+                - Format each as:
+                  - **Provider:** "Their exact words or close paraphrase"
+                - Focus on quotes that:
+                  - Highlight specific results or metrics
+                  - Show unique insights about the collaboration
+                  - Express satisfaction or key learnings
+                  - Reveal interesting challenges overcome
 
-        ---
-
-        **Instructions:**
-        - The **Solution Provider version is your base**; the Client version should *enhance, correct, or add* to it.
-        - If the client provides a correction, update, or different number/fact for something from the provider, ALWAYS use the client's corrected version in the main story (unless it is unclear; then flag for review).
-        - In the "Corrected & Conflicted Replies" section, list each specific fact, number, or point that the client corrected, changed, or disagreed with.
-        - Accuracy is CRITICAL: Double-check every fact, number, quote, and piece of information. Do NOT make any mistakes or subtle errors in the summary. Every detail must match the input summaries exactly unless you are synthesizing clearly from both. If you are unsure about a detail, do NOT invent or guess; either omit or flag it for clarification.
-        - If the Client provided information that contradicts, corrects, or expands on the Provider's version, **create a special section titled "Corrected & Conflicted Replies"**. In this section, briefly and clearly list the key areas where the Client said something different, added, corrected, or removed a point. This should be a concise summary (bullets or short sentences) so the provider can easily see what changed.
-        - In the main story, **merge and synthesize all available details and insights** from both the Solution Provider and Client summaries: background, challenges, solutions, process, collaboration, data, quotes, and results. Do not repeat information—combine and paraphrase to build a seamless narrative.
-        - **Quotes:**  
-            - Include exactly ONE impactful quote from the client in the "Customer/Client Reflection" section
-            - Include exactly ONE impactful quote from the provider in the "Testimonial/Provider Reflection" section
-            - These should be the most powerful, representative quotes
-            - Keep them concise and impactful
-        - Write in clear, engaging business English. Use a mix of paragraphs, bold section headers, and bullet points.
-        - Include real numbers, testimonials, collaboration stories, and unique project details whenever possible.
-        - Start with a punchy title and bold hero statement summarizing the main impact.
-        - Make each section distinct and visually scannable (use bold, bullet points, metrics, and quotes).
-        - Make the results section full of specifics: show metrics, improvements, and qualitative outcomes.
-        - End with a call to action for future collaboration, demo, or contact.
-        - DO NOT use asterisks or Markdown stars (**) in your output. Section headers should be in ALL CAPS or plain text only.
-
-
-        ---
-
-        **CASE STUDY STRUCTURE:**
-
-        1. **Logo & Title Block**
-        - [Logo or company name]
-        - Title: [Provider] & [Client]: [Project or Transformation]
-        - Date (Month, Year)
-        - Avg. Reading Time (if provided)
-
-        2. **Hero Statement / Banner**
-        - One-sentence summary of the most important impact or achievement.
-
-        3. **Introduction**
-        - 2–3 sentence overview, combining both perspectives. Who are the companies? What problem did they tackle together? What was the outcome?
-
-        4. **Methodology** (optional)
-        - Brief on how the project was researched, developed, or analyzed (interviews, surveys, analytics, etc).
-
-        5. **Background**
-        - The client's story, their industry, goals, and challenges before the project.
-        - Why did they choose the solution provider? Add context from both summaries.
-
-        6. **Challenges**
-        - List the main problems the client faced (use bullet points).
-        - Include quantitative data and qualitative pain points from both perspectives.
-
-        7. **The Solution (Provider's Perspective)**
-        - Detail what was delivered, how it worked, and what made it unique.
-        - Include technical innovations, special features, and design choices.
-        - Reference the provider's process, methods, and expertise.
-
-        8. **Implementation & Collaboration (Process)**
-        - Describe how both teams worked together: communication style, project management, user testing, sprints, workshops, etc.
-        - Highlight teamwork, feedback, and any challenges overcome together.
-        - Use insights and anecdotes from both provider and client summaries.
-
-        9. **Results & Impact**
-        - Specific metrics (growth, satisfaction, time saved, revenue, etc) and qualitative outcomes.
-        - Make this section detailed: include before/after numbers, quotes, and proof points.
-        - Summarize what changed for the client, and what the provider is proud of.
-
-        10. **Customer/Client Reflection**
-            - One paragraph (from the client summary) about their experience, feelings, and results in their own words.
-            - Include a client quote if provided.
-
-        11. **Testimonial/Provider Reflection**
-            - Provider's own short reflection or quote about the partnership and success.
-
-        12. **Corrected & Conflicted Replies**
-            - *(Only for the solution provider's view, not in the published story for the client.)*
-            - Briefly summarize any specific facts, numbers, or perspectives that the client corrected, contradicted, or added, compared to the provider's summary.
-            - Use a bulleted list or short sentences:  
-            - "Client stated project delivered in 7 weeks, not 6."  
-            - "Client mentioned additional integration with Shopify, not noted by provider."  
-            - "Provider said client satisfaction 95%, client said 89%."  
-            - "Client removed/clarified certain benefits."
-            - This is a quick-reference "diff" so the provider can see at a glance where their and the client's stories differ or align.
-
-        13. **Call to Action**
-            - Friendly invitation to book a meeting, see a demo, or contact for partnership.
-            - Include links or contact info if available.
-
-        ---
-
-        **Style Notes:**
-
-        - Make it detailed—avoid generic statements.
-        - Merge, paraphrase, and connect ideas to create a seamless, compelling story from both sides.
-        - Use real data and anecdotes whenever possible.
-        - Bold section headers, bullet points for lists, and visual cues for metrics.
-        - Ensure the story flows logically and keeps the reader engaged.
-        - The output should be ready for use as a visually attractive PDF or web story.
-
-        ---
-
-        **INPUT DATA:**
-
-        Now, generate the complete, detailed case study as described above, using both summaries in every section, following these instructions exactly.
-
-        **Provider Summary:**  
-        {provider_summary}
-
-        ---
-
-        **Client Summary:**  
-        {client_summary}
-
-        **IMPORTANT QUOTE STRUCTURE:**
-        1. **Main Story Quotes** (Only these should appear in the main story):
-            - Include exactly ONE impactful quote from the client in the "Customer/Client Reflection" section
-            - Include exactly ONE impactful quote from the provider in the "Testimonial/Provider Reflection" section
-            - These should be the most powerful, representative quotes
-            - Keep them concise and impactful
-
-        2. **Additional Quotes** (These will appear ONLY in the meta data):
-            - After the main story, provide a section titled "Quotes Highlights"
-            - Include 2-3 additional meaningful quotes that were NOT used in the main story
-            - These should be different from the main quotes above
-            - Format each as:
-              - **Client:** "Their exact words or close paraphrase"
-              - **Provider:** "Their exact words or close paraphrase"
-            - Focus on quotes that:
-              - Highlight specific results or metrics
-              - Show unique insights about the collaboration
-              - Express satisfaction or key learnings
-              - Reveal interesting challenges overcome
-
-        Example of Additional Quotes (for meta data only):
-        - **Client:** "What surprised us most was the 80% reduction in manual work."
-        - **Provider:** "The client's feedback helped us refine the solution in unexpected ways."
-        """
+            Example of Additional Quotes (for meta data only):
+            - **Provider:** "The client's feedback helped us refine the solution in unexpected ways."
+            """
 
         headers = {
             "Authorization": f"Bearer {OPENAI_API_KEY}",
@@ -1191,6 +1290,53 @@ def generate_full_case_study():
     finally:
         session.close()
 
+@app.route("/save_final_summary", methods=["POST"])
+def save_final_summary():
+    session = SessionLocal()
+    try:
+        data = request.get_json()
+        case_study_id = data.get("case_study_id")
+        final_summary = data.get("final_summary")
+
+        if not case_study_id or not final_summary:
+            return jsonify({"status": "error", "message": "Missing data"}), 400
+
+        # Get the case study from DB
+        case_study = session.query(CaseStudy).filter_by(id=case_study_id).first()
+        if not case_study:
+            return jsonify({"status": "error", "message": "Case study not found"}), 404
+
+        # ✅ Update final summary
+        case_study.final_summary = final_summary
+
+        # ✅ Extract names from the new final summary
+        names = extract_names_from_case_study(final_summary)
+        lead_entity = names["lead_entity"]
+        partner_entity = names["partner_entity"]
+        project_title = names["project_title"]
+        new_title = f"{lead_entity} x {partner_entity}: {project_title}"
+
+        # ✅ Update CaseStudy title and name fields
+        case_study.title = new_title
+        case_study.provider_name = lead_entity
+        case_study.client_name = partner_entity
+        case_study.project_name = project_title
+
+        session.commit()
+
+        return jsonify({
+            "status": "success",
+            "message": "Final summary and title updated",
+            "names": names,
+            "case_study_id": case_study.id
+        })
+
+    except Exception as e:
+        session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        session.close()
+
 @app.route("/download_full_summary_pdf")
 def download_full_summary_pdf():
     case_study_id = request.args.get("case_study_id")
@@ -1354,6 +1500,18 @@ def api_case_studies():
                 'video_id': cs.video_id,
                 'video_status': cs.video_status,
                 'video_created_at': cs.video_created_at.isoformat() if cs.video_created_at else None,
+                # Pictory video fields
+                'pictory_video_url': cs.pictory_video_url,
+                'pictory_storyboard_id': cs.pictory_storyboard_id,
+                'pictory_render_id': cs.pictory_render_id,
+                'pictory_video_status': cs.pictory_video_status,
+                'pictory_video_created_at': cs.pictory_video_created_at.isoformat() if cs.pictory_video_created_at else None,
+                # Podcast fields
+                'podcast_url': cs.podcast_url,
+                'podcast_job_id': cs.podcast_job_id,
+                'podcast_status': cs.podcast_status,
+                'podcast_script': cs.podcast_script,
+                'podcast_created_at': cs.podcast_created_at.isoformat() if cs.podcast_created_at else None,
             })
         return jsonify({'success': True, 'case_studies': result})
     finally:
@@ -1584,24 +1742,57 @@ def serve_generated_file(filename):
 def generate_linkedin_post(case_study_text):
     """Generate a LinkedIn post from a case study using AI."""
     prompt = f"""
-    You are writing a highly engaging LinkedIn post as the *solution provider* (e.g., tech company, agency, freelancer) who successfully delivered the project described below.
+    You are an expert LinkedIn ghostwriter for a company.  
+Your job is to write **ONE well-structured LinkedIn post** that matches the exact style and tone of the sample below.
 
-    Craft a LinkedIn post that:
+---
 
-    * Begins with a powerful hook: a thought-provoking question, intriguing fact, surprising insight, or bold statement that immediately grabs attention.
-    * Clearly and concisely frames the specific challenge or problem your client was facing in relatable, human language.
-    * Describes how your team approached this challenge, highlighting your unique methodology, collaboration process, or innovative thinking in a grounded, authentic way.
-    * Shares specific measurable outcomes or meaningful feedback from your client (quantitative metrics like percentages, time saved, costs reduced, or qualitative insights like direct quotes or observed benefits).
-    * Reflects genuine pride and insight into why this project mattered, showcasing real value without hype or sales clichés.
-    * Includes a short, authentic quote from your client or your project lead if available, making the story more credible and engaging.
-    * Ends with a thoughtful reflection or an engaging, open-ended question designed to spark conversation or encourage readers to share similar experiences or insights.
-    * Uses a confident yet relatable tone: professional but human, insightful but not overly polished—like a respected founder or lead reflecting thoughtfully on a successful project.
-    * Includes 3–5 targeted hashtags relevant to your industry or project focus (e.g., #DigitalTransformation, #AI, #CustomerSuccess, #Innovation, #TechLeadership).
-    * Keeps the total length concise yet substantial, between 1000–1300 characters (including hashtags).
+**🎯 Purpose:**  
+The post should feel like a personal reflection from someone in the company (e.g., founder, project lead, or senior consultant) sharing a true client success story PLUS practical insights that others can learn from — written in a warm, conversational, and very clear style.
 
-    Avoid jargon, buzzwords, or generic statements. Aim for clarity, authenticity, and storytelling excellence.
+---
 
-    Case Study:
+**✅ Write it like this:**
+
+- Your FIRST LINE must be **one short sentence only** — maximum **10 words**.  
+- It must be directly inspired by the biggest *pain point, surprising stat, or unexpected win* in the case study text.  
+- It must read like a natural curiosity trigger, not a generic corporate result or claim.
+• Follow immediately with 1–2 short lines that naturally set up the story or the key theme.  
+• Tell a short, clear story describing:  
+  — How the company worked with a client  
+  — What they learned during the project  
+  — How they turned those lessons into a clear, helpful framework or simple steps others can use.  
+• Break down the framework or lessons just like the example: use short lines, clear steps, maybe simple arrows or numbering.  
+• Optionally illustrate the *wrong way vs right way* using short lines.  
+• Wrap up with 1–2 lines encouraging readers to apply the idea right away.  
+• End with 3–5 relevant hashtags (all lowercase, no spaces).  
+• Finally, add one line: *Visual idea:* describe a simple graphic that matches the framework.
+
+---
+
+**✅ Style & tone:**  
+• Fully from the company's voice — "we", "our team", "our project".  
+• Warm, confident, human.  
+• No stiff jargon or robotic phrasing.  
+• Short paragraphs, short sentences, clear line breaks — easy to read on mobile.  
+• Plain language — max Grade 6–7 reading level.  
+• Total length: around **1200–1800 characters**, including hashtags.
+
+---
+
+**❌ Do NOT:**  
+• Do not use visible section labels like "HOOK".  
+• Do not make it sound generic or repetitive.  
+• Do not list dry bullet points — use arrows or short lines like the example.  
+• Do not add any links in the post.
+
+---
+
+**✅ CASE STUDY:**  
+
+
+
+
     {case_study_text}
 
     LinkedIn Post:
@@ -1662,46 +1853,40 @@ def generate_linkedin_post_endpoint():
 def generate_heygen_input_text(final_summary):
     """Generate optimized input text for HeyGen video using OpenAI."""
     try:
-        prompt = f"""You are creating a script for a professional video presentation using an AI avatar. Your task is to transform this case study into an engaging, conversational script that will be delivered by an AI avatar.
+        prompt = f"""You are a professional business scriptwriter creating a short video script for a HeyGen AI avatar. Your task is to turn the success story summary below into a concise, professional, and clearly structured spoken script — as if it's being presented by a company representative in a formal setting (e.g. on LinkedIn, in a client meeting, or at a company showcase).
 
-IMPORTANT REQUIREMENTS:
-- Maximum 1300 characters (strict limit)
-- Natural, conversational tone that sounds human
-- Clear, professional delivery style
-- Focus on the most impactful parts of the story
-- Include specific metrics and results
-- Break into natural speaking patterns
-- Avoid complex jargon or technical terms
-- Keep sentences concise and easy to follow
+Tone:
+- Professional, confident, and factual.
+- No exaggeration, slang, hype, or casual phrases (e.g., avoid words like "smashing," "amazing," "incredible," "AI-powered" unless explicitly mentioned).
+- Write in first-person plural ("we," "our team," "our client") as if the company is speaking.
 
-SCRIPT STRUCTURE:
-1. Opening Hook (1-2 sentences)
-   - Grab attention with the most impressive result or achievement
-   - Set the context briefly
+Content Rules:
+- Only use information found in the success story summary. Do not assume or invent anything.
+- Do not add filler like "since no metrics are given" — if something is missing, skip that point entirely. Every sentence must reflect real, supported content.
+- Include the company name, client name, and project name where appropriate.
+- Focus on the client's challenge, what was delivered, how it was implemented (if described), and the final outcome.
+- If specific results or metrics are provided, include them clearly. If not, omit that section without comment.
 
-2. Main Story (3-4 sentences)
-   - Explain the challenge/problem
-   - Describe the solution
-   - Highlight key implementation details
-   - Share specific results and metrics
+Style:
+- Use short, natural-sounding sentences — easy to follow when spoken by an AI avatar.
+- The tone should sound like a real business person, not like a marketer or assistant.
 
-3. Closing Impact (1-2 sentences)
-   - Reinforce the main achievement
-   - End with a memorable takeaway
+Structure:
+1. Brief introduction or hook (1–2 sentences)
+2. Client background or challenge
+3. What we delivered
+4. How it was implemented (if relevant)
+5. The outcome or impact
+6. Closing reflection or key takeaway
 
-TONE AND STYLE:
-- Professional but warm and engaging
-- Confident but not salesy
-- Clear and direct
-- Natural pauses for the avatar to breathe
-- Avoid complex sentence structures
-- Use active voice
-- Include transition phrases for smooth delivery
+Length:
+- Keep the full script under 1300 characters.
+- Do not include any titles, labels, line breaks, or extra notes — return only the final clean block of spoken text.
 
-Case Study Summary:
+Success Story Summary:
 {final_summary}
 
-Please format the response as a single, flowing paragraph optimized for video narration. Remember to stay within 1300 characters."""
+Return only the final video script. Nothing else."""
 
         headers = {
             "Authorization": f"Bearer {OPENAI_API_KEY}",
@@ -1729,6 +1914,222 @@ Please format the response as a single, flowing paragraph optimized for video na
         return script
     except Exception as e:
         print(f"Error generating HeyGen input text: {str(e)}")
+        return None
+
+def get_pictory_access_token():
+    """Get access token from Pictory API."""
+    try:
+        headers = {
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "client_id": PICTORY_CLIENT_ID,
+            "client_secret": PICTORY_CLIENT_SECRET
+        }
+        
+        response = requests.post(
+            f"{PICTORY_API_BASE_URL}/pictoryapis/v1/oauth2/token",
+            headers=headers,
+            json=payload
+        )
+        
+        if response.status_code == 200:
+            return response.json().get("access_token")
+        else:
+            print(f"Pictory token error: {response.status_code} - {response.text}")
+            return None
+    except Exception as e:
+        print(f"Error getting Pictory access token: {str(e)}")
+        return None
+
+def generate_pictory_scenes_text(final_summary):
+    """Generate scene-based text for Pictory video using OpenAI."""
+    try:
+        prompt = f"""You are a video scriptwriter for StoryBoom AI. Your task is to turn the case study below into a compelling 8-scene short-form video script. Each sentence should reflect a real moment or idea from the story, written clearly enough to be visualized as a separate scene.
+
+Your goal is to help companies showcase their project or client success story in a way that feels real, story-driven, and accurate.
+
+Guidelines:
+- Use present tense and active voice.
+- Each sentence should be short (10–25 words), simple, and clear.
+- Each one should reflect one key idea that can be visualized in a clip (e.g., a challenge, a solution, a result).
+- Avoid vague or generic phrases like "the results were amazing." Be concrete and real.
+- Use a natural, spoken tone, like someone confidently narrating their team's journey.
+- Always include the company name, client name, and project name where relevant.
+- Stay true to the facts and phrasing in the story. Do not exaggerate or fabricate.
+
+Structure the 8 scenes like this:
+1. A strong, curiosity-driven hook
+2. The challenge or situation
+3. Who we are (the solution provider)
+4. What we did
+5. How we delivered it
+6. The main outcome
+7. A highlight or metric
+8. The impact on the client (or their feedback)
+
+Output format:
+Return exactly 8 sentences, separated by a period and a space. No line breaks. No bullet points. No extra text or titles.
+
+Here is the case study:
+{final_summary}
+
+Return only the final 8-scene script, nothing else."""
+
+        headers = {
+            "Authorization": f"Bearer {OPENAI_API_KEY}",
+            "Content-Type": "application/json"
+        }
+
+        payload = {
+            "model": openai_config["model"],
+            "messages": [
+                {"role": "system", "content": "You are a professional short-form video scriptwriter who creates engaging, visual scenes for social media videos."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.7,
+            "max_tokens": 800
+        }
+
+        response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+        result = response.json()
+        scenes_text = result["choices"][0]["message"]["content"].strip()
+        
+        # Split into individual scenes
+        scenes = [scene.strip() for scene in scenes_text.split('\n') if scene.strip()]
+        
+        # Clean up numbering if present
+        cleaned_scenes = []
+        for scene in scenes:
+            # Remove numbering like "1.", "2.", etc.
+            cleaned_scene = re.sub(r'^\d+\.\s*', '', scene)
+            cleaned_scenes.append(cleaned_scene)
+        
+        return cleaned_scenes[:6]  # Ensure max 6 scenes
+    except Exception as e:
+        print(f"Error generating Pictory scenes text: {str(e)}")
+        return None
+
+def create_pictory_storyboard(token, scenes, video_name):
+    """Create a storyboard using Pictory API."""
+    try:
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-Pictory-User-Id": PICTORY_USER_ID,
+            "Content-Type": "application/json"
+        }
+        
+        # Debug: Print the scenes being sent
+        print(f"Generated scenes for Pictory:")
+        for i, scene in enumerate(scenes, 1):
+            print(f"Scene {i}: {scene}")
+        
+        # Create scenes array for Pictory
+        # Combine all scenes into one story and let Pictory handle scene creation
+        combined_story = " ".join(scenes)
+        print(f"Combined story: {combined_story}")
+        
+        pictory_scenes = [{
+            "story": combined_story,
+            "createSceneOnNewLine": False,
+            "createSceneOnEndOfSentence": True  # Create scenes at sentence boundaries
+        }]
+        
+        payload = {
+            "videoName": video_name,
+            "videoWidth": 1080,
+            "videoHeight": 1920,  # Vertical format for short-form
+            "language": "en",
+            "saveProject": True,
+            "scenes": pictory_scenes,
+            "voiceOver": {
+                "enabled": True,
+                "aiVoices": [
+                    {
+                        "speaker": "Adison",
+                        "speed": 100,  # Must be >= 50 according to API
+                        "amplificationLevel": 0
+                    }
+                ]
+            },
+            "backgroundMusic": {
+                "enabled": True,
+                "autoMusic": True,
+                "volume": 0.3  # Low volume as requested
+            }
+        }
+        
+        response = requests.post(
+            f"{PICTORY_API_BASE_URL}/pictoryapis/v2/video/storyboard",
+            headers=headers,
+            json=payload
+        )
+        
+        if response.status_code == 200:
+            return response.json().get("data", {}).get("jobId")
+        else:
+            print(f"Pictory storyboard error: {response.status_code} - {response.text}")
+            return None
+    except Exception as e:
+        print(f"Error creating Pictory storyboard: {str(e)}")
+        return None
+
+def render_pictory_video(token, storyboard_job_id):
+    """Render the storyboard to video using Pictory API."""
+    try:
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-Pictory-User-Id": PICTORY_USER_ID,
+            "Content-Type": "application/json"
+        }
+        
+        response = requests.put(
+            f"{PICTORY_API_BASE_URL}/pictoryapis/v2/video/render/{storyboard_job_id}",
+            headers=headers
+        )
+        
+        if response.status_code == 200:
+            return response.json().get("data", {}).get("jobId")
+        else:
+            print(f"Pictory render error: {response.status_code} - {response.text}")
+            return None
+    except Exception as e:
+        print(f"Error rendering Pictory video: {str(e)}")
+        return None
+
+def check_pictory_job_status(token, job_id):
+    """Check the status of a Pictory job."""
+    try:
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "X-Pictory-User-Id": PICTORY_USER_ID,
+            "accept": "application/json",
+            "Content-Type": "application/json"
+        }
+        
+        print(f"Checking Pictory job status for job_id: {job_id}")
+        print(f"Using headers: {headers}")
+        
+        # Use the "Get Job" endpoint from the Jobs section
+        response = requests.get(
+            f"{PICTORY_API_BASE_URL}/pictoryapis/v1/jobs/{job_id}",
+            headers=headers
+        )
+        
+        print(f"Pictory job status response: {response.status_code} - {response.text}")
+        
+        if response.status_code == 200:
+            data = response.json().get("data", {})
+            print(f"Pictory job data: {data}")
+            return data
+        else:
+            print(f"Pictory job status error: {response.status_code} - {response.text}")
+            return None
+    except Exception as e:
+        print(f"Error checking Pictory job status: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return None
 
 @app.route("/api/generate_video", methods=["POST"])
@@ -1790,8 +2191,8 @@ def generate_video():
                         "pitch": 0
                     },
                     "background": {
-                        "type": "color",
-                        "value": "#f6f6fc"
+                        "type": "image",
+                        "url": "https://i.postimg.cc/g0tpPn1y/background3.jpg"
                     }
                 }
             ]
@@ -1948,6 +2349,587 @@ def check_video_status(video_id):
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+
+@app.route("/api/generate_pictory_video", methods=["POST"])
+def generate_pictory_video():
+    session_db = SessionLocal()
+    try:
+        data = request.get_json()
+        case_study_id = data.get('case_study_id')
+        
+        if not case_study_id:
+            return jsonify({"error": "Case study ID is required"}), 400
+            
+        case_study = session_db.query(CaseStudy).filter_by(id=case_study_id).first()
+        if not case_study:
+            return jsonify({"error": "Case study not found"}), 404
+            
+        if not case_study.final_summary:
+            return jsonify({"error": "Final summary is required for video generation"}), 400
+
+        # Prevent multiple Pictory video generations for the same case study
+        if case_study.pictory_storyboard_id:
+            return jsonify({"error": "A Pictory video has already been generated for this case study."}), 400
+
+        # Get Pictory access token
+        token = get_pictory_access_token()
+        if not token:
+            return jsonify({"error": "Failed to get Pictory access token"}), 500
+
+        # Generate scene-based text for Pictory
+        scenes = generate_pictory_scenes_text(case_study.final_summary)
+        if not scenes:
+            return jsonify({"error": "Failed to generate scenes text"}), 500
+
+        # Create video name
+        video_name = f"Case Study {case_study.id} - Short Form Video"
+
+        # Create storyboard
+        storyboard_job_id = create_pictory_storyboard(token, scenes, video_name)
+        if not storyboard_job_id:
+            return jsonify({"error": "Failed to create Pictory storyboard"}), 500
+
+        # Update case study with Pictory information
+        case_study.pictory_storyboard_id = storyboard_job_id
+        case_study.pictory_video_status = 'storyboard_processing'
+        case_study.pictory_video_created_at = datetime.now(UTC)
+        session_db.commit()
+        
+        print(f"Saved Pictory storyboard_id {storyboard_job_id} to case study {case_study.id}")
+        
+        return jsonify({
+            "status": "success",
+            "storyboard_job_id": storyboard_job_id,
+            "message": "Pictory video storyboard creation started"
+        })
+
+    except Exception as e:
+        session_db.rollback()
+        print(f"Error in generate_pictory_video: {str(e)}")
+        return jsonify({"status": "error", "error": str(e)}), 500
+    finally:
+        session_db.close()
+
+@app.route("/api/pictory_video_status/<storyboard_job_id>", methods=["GET"])
+def check_pictory_video_status(storyboard_job_id):
+    if not storyboard_job_id:
+        return jsonify({"error": "Storyboard job ID is required"}), 400
+        
+    try:
+        print(f"Checking Pictory video status for storyboard_job_id: {storyboard_job_id}")
+        
+        # Get Pictory access token
+        token = get_pictory_access_token()
+        if not token:
+            print("Failed to get Pictory access token")
+            return jsonify({"error": "Failed to get Pictory access token"}), 500
+
+        # Check storyboard status
+        storyboard_status = check_pictory_job_status(token, storyboard_job_id)
+        if not storyboard_status:
+            print("Failed to check storyboard status")
+            return jsonify({"error": "Failed to check storyboard status"}), 500
+
+        status = storyboard_status.get("status", "unknown")
+        print(f"Storyboard status: {status}")
+        
+        # If storyboard is completed, start rendering
+        if status == "completed" and storyboard_status.get("renderParams"):
+            # Get case study to check if we need to start rendering
+            session_db = SessionLocal()
+            try:
+                case_study = session_db.query(CaseStudy).filter_by(pictory_storyboard_id=storyboard_job_id).first()
+                if case_study and not case_study.pictory_render_id:
+                    # Start rendering
+                    render_job_id = render_pictory_video(token, storyboard_job_id)
+                    if render_job_id:
+                        case_study.pictory_render_id = render_job_id
+                        case_study.pictory_video_status = 'rendering'
+                        session_db.commit()
+                        
+                        return jsonify({
+                            "status": "rendering",
+                            "render_job_id": render_job_id,
+                            "message": "Video rendering started"
+                        })
+                    else:
+                        return jsonify({
+                            "status": "error",
+                            "error": "Failed to start video rendering"
+                        }), 500
+            finally:
+                session_db.close()
+        
+        # Check if storyboard status already contains video URL (completed video)
+        if status == "completed" and storyboard_status.get("videoURL"):
+            print(f"Storyboard already contains video URL: {storyboard_status.get('videoURL')}")
+            # Video is already completed in storyboard status
+            session_db = SessionLocal()
+            try:
+                case_study = session_db.query(CaseStudy).filter_by(pictory_storyboard_id=storyboard_job_id).first()
+                if case_study:
+                    video_url = storyboard_status.get("videoURL")
+                    case_study.pictory_video_url = video_url
+                    case_study.pictory_video_status = 'completed'
+                    session_db.commit()
+                    
+                    return jsonify({
+                        "status": "completed",
+                        "video_url": video_url,
+                        "message": "Video is ready"
+                    })
+            finally:
+                session_db.close()
+        
+        # If we have a render job, check its status
+        session_db = SessionLocal()
+        try:
+            case_study = session_db.query(CaseStudy).filter_by(pictory_storyboard_id=storyboard_job_id).first()
+            if case_study and case_study.pictory_render_id:
+                print(f"Checking render job status for render_id: {case_study.pictory_render_id}")
+                render_status = check_pictory_job_status(token, case_study.pictory_render_id)
+                if render_status:
+                    render_status_value = render_status.get("status", "unknown")
+                    print(f"Render status: {render_status_value}")
+                    
+                    if render_status_value == "completed":
+                        # Video is ready - check for video URL in various possible fields
+                        video_url = (
+                            render_status.get("videoURL") or  # Try videoURL first
+                            render_status.get("videoUrl") or  # Try videoUrl
+                            render_status.get("output", {}).get("videoUrl") or  # Try nested output.videoUrl
+                            render_status.get("output", {}).get("videoURL")  # Try nested output.videoURL
+                        )
+                        if video_url:
+                            case_study.pictory_video_url = video_url
+                            case_study.pictory_video_status = 'completed'
+                            session_db.commit()
+                            
+                            return jsonify({
+                                "status": "completed",
+                                "video_url": video_url,
+                                "message": "Video is ready"
+                            })
+                        else:
+                            print(f"No video URL found in render status: {render_status}")
+                            return jsonify({
+                                "status": "error",
+                                "error": "Video completed but no URL found"
+                            }), 500
+                    elif render_status_value == "failed":
+                        case_study.pictory_video_status = 'failed'
+                        session_db.commit()
+                        
+                        return jsonify({
+                            "status": "failed",
+                            "error": "Video rendering failed"
+                        }), 500
+                    else:
+                        return jsonify({
+                            "status": "rendering",
+                            "message": f"Video is {render_status_value}"
+                        })
+        finally:
+            session_db.close()
+        
+        # Return storyboard status
+        return jsonify({
+            "status": status,
+            "message": f"Storyboard is {status}"
+        })
+        
+    except Exception as e:
+        print(f"Error checking Pictory video status: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+def generate_podcast_prompt(final_summary):
+    """Generate a podcast prompt based on the final case study summary."""
+    try:
+        # Extract key information from the case study
+        lines = final_summary.split('\n')
+        
+        # Find the actual title
+        title = "Business Case Study"
+        for line in lines:
+            if line.strip() and not line.startswith('**') and not line.startswith('-') and ':' in line:
+                title = line.split(':')[0].strip()
+                break
+        
+        # Extract a clean summary (first 800 characters)
+        content = ""
+        for line in lines:
+            if line.strip() and not line.startswith('**') and not line.startswith('-') and len(line.strip()) > 20:
+                content += line.strip() + " "
+                if len(content) > 800:
+                    break
+        
+        # Create a prompt that follows the API documentation style
+        prompt = f"""Create a podcast episode titled "{title}" with an engaging, conversational tone — the kind you'd hear between two business professionals genuinely excited about a successful project. The episode should be 5–7 minutes long and sound like a natural, unscripted conversation — not a formal script or monologue.
+
+The discussion should feel dynamic, with moments of light humor, curiosity, follow-up questions, and real reactions between the two speakers. It should reflect what it's like to listen in on a smart, energized business podcast — natural, honest, and full of small human moments.
+
+One speaker should be the host guiding the conversation, while the other is a team member who helped deliver the project. The guest shares real stories, insights, and lessons learned from inside the solution provider's company — bringing a personal and grounded perspective to the episode.
+
+Structure:
+1. Begin with a catchy intro — a question, surprising insight, or bold hook to draw listeners in.
+2. Introduce the client's background and the challenge they were facing.
+3. Dive into what the team delivered — what made it effective or unique.
+4. Explore how the solution was implemented — include reflections, complexity, or small wins.
+5. Highlight the results and real business impact.
+6. Wrap with thoughtful takeaways, lessons learned, or what they'd do differently next time.
+
+The conversation should feel human and real — like the host and guest are riffing off each other, reacting naturally, and letting the story flow. Avoid speaker labels like "Host:" or "Guest:". Don't write a transcript or narration. Don't invent any facts.
+
+Use only the information provided below. Return a natural, high-energy podcast episode description (max 300 words) that captures the vibe of a modern, conversational business story.
+
+Success story summary:
+{content}
+
+Return a natural-sounding, engaging podcast episode description - it should be maximum 250 words - that captures the energy, insights, and human tone of a real business conversation.
+
+"""
+
+
+
+        return prompt.strip()
+    except Exception as e:
+        print(f"Error generating podcast prompt: {str(e)}")
+        return None
+
+@app.route("/api/generate_podcast", methods=["POST"])
+def generate_podcast():
+    session_db = SessionLocal()
+    try:
+        data = request.get_json()
+        case_study_id = data.get('case_study_id')
+        
+        if not case_study_id:
+            return jsonify({"error": "Case study ID is required"}), 400
+            
+        case_study = session_db.query(CaseStudy).filter_by(id=case_study_id).first()
+        if not case_study:
+            return jsonify({"error": "Case study not found"}), 404
+            
+        if not case_study.final_summary:
+            return jsonify({"error": "Final summary is required for podcast generation"}), 400
+
+        # Check if Wondercraft API key is configured
+        if not WONDERCRAFT_API_KEY:
+            return jsonify({"error": "Wondercraft API key not configured"}), 500
+
+        # Clear any previous failed podcast data if this is a retry
+        if case_study.podcast_status == 'failed':
+            print(f"Clearing previous failed podcast data for case study {case_study.id}")
+            case_study.podcast_job_id = None
+            case_study.podcast_url = None
+            case_study.podcast_script = None
+            case_study.podcast_status = None
+            case_study.podcast_created_at = None
+            session_db.commit()
+
+        # Generate podcast prompt
+        podcast_prompt = generate_podcast_prompt(case_study.final_summary)
+        if not podcast_prompt:
+            return jsonify({"error": "Failed to generate podcast prompt"}), 500
+
+        print(f"Generated prompt length: {len(podcast_prompt)} characters")
+        print(f"Prompt preview: {podcast_prompt[:200]}...")
+
+        # Prepare the request to Wondercraft API with correct header format
+        headers = {
+            "Content-Type": "application/json",
+            "X-API-KEY": WONDERCRAFT_API_KEY  # Fixed header format
+        }
+        
+        payload = {
+            "prompt": podcast_prompt
+        }
+
+        print("Sending request to Wondercraft API...")
+        print(f"API URL: {WONDERCRAFT_API_BASE_URL}/podcast")
+        print(f"Headers: {headers}")
+        
+        response = requests.post(
+            f"{WONDERCRAFT_API_BASE_URL}/podcast",
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+
+        print(f"Wondercraft API response status: {response.status_code}")
+        print(f"Wondercraft API response: {response.text}")
+
+        if response.status_code == 200:
+            podcast_data = response.json()
+            job_id = podcast_data.get('job_id')
+            
+            if not job_id:
+                print("No job_id in response:", podcast_data)
+                return jsonify({
+                    "status": "error",
+                    "error": "No job ID received from Wondercraft API"
+                }), 500
+            
+            # Update case study with podcast information
+            case_study.podcast_job_id = job_id
+            case_study.podcast_status = 'processing'
+            case_study.podcast_created_at = datetime.now(UTC)
+            session_db.commit()
+            print(f"Saved podcast_job_id {job_id} to case study {case_study.id}")
+            
+            return jsonify({
+                "status": "success",
+                "job_id": job_id,
+                "message": "Podcast generation started"
+            })
+        elif response.status_code == 429:
+            return jsonify({
+                "status": "error",
+                "error": "Rate limit exceeded. Too many concurrent jobs. Please try again later."
+            }), 429
+        elif response.status_code == 422:
+            return jsonify({
+                "status": "error",
+                "error": f"Invalid request: {response.text}"
+            }), 422
+        else:
+            error_message = f"Wondercraft API error (Status {response.status_code}): {response.text}"
+            print(error_message)
+            return jsonify({
+                "status": "error",
+                "error": error_message
+            }), response.status_code
+
+    except Exception as e:
+        session_db.rollback()
+        print(f"Error in generate_podcast: {str(e)}")
+        return jsonify({"status": "error", "error": str(e)}), 500
+    finally:
+        session_db.close()
+
+@app.route("/api/podcast_status/<job_id>", methods=["GET"])
+def check_podcast_status(job_id):
+    if not job_id:
+        return jsonify({"error": "Job ID is required"}), 400
+        
+    try:
+        headers = {
+            "X-API-KEY": WONDERCRAFT_API_KEY  # Fixed header format
+        }
+        
+        print(f"Checking podcast status for job ID: {job_id}")
+        response = requests.get(
+            f"{WONDERCRAFT_API_BASE_URL}/podcast/{job_id}",
+            headers=headers,
+            timeout=10
+        )
+        
+        print(f"Wondercraft API response status: {response.status_code}")
+        print(f"Wondercraft API response: {response.text}")
+        
+        if response.status_code == 404:
+            print("Wondercraft podcast not ready yet (404).")
+            return jsonify({"status": "not_ready", "message": "Podcast not ready yet"}), 200
+        
+        if response.status_code != 200:
+            error_msg = f"Wondercraft API error: {response.text}"
+            print(error_msg)
+            return jsonify({"error": error_msg}), 500
+            
+        podcast_data = response.json()
+        print(f"Wondercraft podcast status response: {podcast_data}")
+        
+        # Update case study with podcast status and URL if completed
+        session_db = SessionLocal()
+        try:
+            case_study = session_db.query(CaseStudy).filter_by(podcast_job_id=job_id).first()
+            if case_study:
+                status = podcast_data.get('finished', False)
+                error = podcast_data.get('error', False)
+                url = podcast_data.get('url')
+                script = podcast_data.get('script')
+                
+                print(f"Status: {status}, Error: {error}, URL: {url}, Script: {script is not None}")
+                
+                if status and not error and url:
+                    # Podcast generation completed successfully
+                    case_study.podcast_status = 'completed'
+                    case_study.podcast_url = url
+                    case_study.podcast_script = script
+                    session_db.commit()
+                    print(f"Podcast completed for case study {case_study.id}")
+                    
+                    return jsonify({
+                        "status": "completed",
+                        "url": url,
+                        "script": script,
+                        "message": "Podcast generation completed"
+                    })
+                elif error:
+                    # Podcast generation failed
+                    case_study.podcast_status = 'failed'
+                    session_db.commit()
+                    print(f"Podcast generation failed for case study {case_study.id}")
+                    
+                    return jsonify({
+                        "status": "failed",
+                        "message": "Podcast generation failed",
+                        "details": podcast_data
+                    })
+                else:
+                    # Still processing
+                    case_study.podcast_status = 'processing'
+                    session_db.commit()
+                    
+                    return jsonify({
+                        "status": "processing",
+                        "message": "Podcast is being generated"
+                    })
+                
+            print(f"No case study found for podcast job ID: {job_id}")
+            return jsonify(podcast_data)
+            
+        except Exception as db_error:
+            session_db.rollback()
+            print(f"Database error: {str(db_error)}")
+            return jsonify({"error": "Database error occurred"}), 500
+        finally:
+            session_db.close()
+            
+    except requests.RequestException as e:
+        print(f"Request error: {str(e)}")
+        return jsonify({"error": f"Failed to connect to Wondercraft API: {str(e)}"}), 500
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+
+@app.route("/save_as_word", methods=["POST"])
+def save_as_word():
+    try:
+        data = request.get_json()
+        case_study_id = data.get("case_study_id")
+        final_summary = data.get("final_summary")
+        title = data.get("title", "Case Study")
+
+        if not case_study_id or not final_summary:
+            return jsonify({"status": "error", "message": "Missing case_study_id or final_summary"}), 400
+
+        # Create Word document using python-docx
+        from docx import Document
+        from docx.shared import Inches
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
+        from docx.oxml.shared import OxmlElement, qn
+
+        # Create a new document
+        doc = Document()
+        
+        # Add title
+        title_para = doc.add_paragraph()
+        title_run = title_para.add_run(title)
+        title_run.bold = True
+        title_run.font.size = Inches(0.5)
+        title_para.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        
+        # Add some spacing
+        doc.add_paragraph()
+        
+        # Add the final summary content
+        # Split by lines and add each line as a paragraph
+        lines = final_summary.split('\n')
+        for line in lines:
+            if line.strip():  # Only add non-empty lines
+                # Check if it's a header (all caps or starts with **)
+                if line.strip().isupper() or line.strip().startswith('**'):
+                    # It's a header
+                    header_para = doc.add_paragraph()
+                    header_run = header_para.add_run(line.strip().replace('**', ''))
+                    header_run.bold = True
+                    header_run.font.size = Inches(0.3)
+                else:
+                    # It's regular content
+                    para = doc.add_paragraph()
+                    para.add_run(line.strip())
+        
+        # Save the document to a temporary file
+        import tempfile
+        import os
+        
+        # Create a safe filename
+        safe_title = "".join(c for c in title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        safe_title = safe_title.replace(' ', '_')
+        filename = f"{safe_title}_{case_study_id}.docx"
+        
+        # Save to generated_pdfs directory (we'll use this for all generated files)
+        os.makedirs("generated_pdfs", exist_ok=True)
+        filepath = os.path.join("generated_pdfs", filename)
+        
+        doc.save(filepath)
+        
+        # Return the file
+        return send_file(
+            filepath,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+
+    except Exception as e:
+        print(f"Error generating Word document: {str(e)}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/api/podcast_audio/<int:case_study_id>", methods=["OPTIONS"])
+def podcast_audio_options(case_study_id):
+    """Handle CORS preflight requests for podcast audio."""
+    response = jsonify({"status": "ok"})
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, HEAD, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Range, Content-Type'
+    return response
+
+@app.route("/api/podcast_audio/<int:case_study_id>", methods=["GET"])
+def serve_podcast_audio(case_study_id):
+    """Proxy endpoint to serve podcast audio files to avoid CORS issues."""
+    try:
+        session_db = SessionLocal()
+        case_study = session_db.query(CaseStudy).filter_by(id=case_study_id).first()
+        
+        if not case_study or not case_study.podcast_url:
+            return jsonify({"error": "Podcast not found"}), 404
+        
+        # Fetch the audio file from the external URL
+        response = requests.get(case_study.podcast_url, stream=True, timeout=30)
+        
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to fetch audio file"}), 500
+        
+        # Create a Flask response with the audio content
+        from flask import Response
+        
+        def generate():
+            for chunk in response.iter_content(chunk_size=8192):
+                yield chunk
+        
+        # Return the audio as a streaming response
+        return Response(
+            generate(),
+            content_type=response.headers.get('Content-Type', 'audio/mpeg'),
+            headers={
+                'Content-Length': response.headers.get('Content-Length'),
+                'Accept-Ranges': 'bytes',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+                'Access-Control-Allow-Headers': 'Range, Content-Type',
+                'Cache-Control': 'public, max-age=3600'
+            }
+        )
+        
+    except Exception as e:
+        print(f"Error serving podcast audio: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
+    finally:
+        session_db.close()
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))

@@ -19,7 +19,9 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Create Base class
+# Create Base class
 from models import Base
+
 
 
 def init_db():

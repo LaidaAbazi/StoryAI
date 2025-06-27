@@ -8,6 +8,7 @@ let aiBuffer = "";
 let hasEnded = false;
 let isInstructionsApplied = false;
 let providerSessionId = ""; // At the top
+let caseStudyId = null; // Integer case study ID for database operations
 
 const audioElement = document.getElementById("aiAudio");
 const startBtn = document.getElementById('startBtn');
@@ -40,13 +41,13 @@ STYLE:
 - **Start with a casual greeting**: Greet the user warmly and naturally — like you're happy to connect with them. Your greeting should feel spontaneous, relaxed, and human. Avoid using fixed or repeated phrases. Vary your greeting to suit the tone.
 
 - **Introduce yourself**: - When you start, introduce yourself as StoryBoom AI — your storytelling partner.
-                          - Say it like you’re excited to hear their success and help turn it into a case study they’ll actually want to share.
-                          - Use relaxed, natural phrases — imagine you’re talking to a colleague or friend.
-                          - Vary how you say it, don’t repeat the same exact words.
-                          - Some ideas to inspire you (don’t say these exactly, just use the vibe):
-                            • “Hey, I’m StoryBoom AI, here to listen to your success and help turn it into a case study you’ll be proud to share.”
-                            • “Hi! I’m StoryBoom AI — think of me as your storytelling teammate, ready to help craft your story into a share-worthy case study.”
-                            • “Nice to meet you! I’m StoryBoom AI, and I’m here to capture your success so we can make a case study that really shows it off.”
+                          - Say it like you're excited to hear their success and help turn it into a case study they'll actually want to share.
+                          - Use relaxed, natural phrases — imagine you're talking to a colleague or friend.
+                          - Vary how you say it, don't repeat the same exact words.
+                          - Some ideas to inspire you (don't say these exactly, just use the vibe):
+                            • "Hey, I'm StoryBoom AI, here to listen to your success and help turn it into a case study you'll be proud to share."
+                            • "Hi! I'm StoryBoom AI — think of me as your storytelling teammate, ready to help craft your story into a share-worthy case study.
+                            • "Nice to meet you! I'm StoryBoom AI, and I'm here to capture your success so we can make a case study that really shows it off.
                           - After saying this, pause and wait for them to respond before moving on.
 
 
@@ -60,7 +61,7 @@ STYLE:
 "This question **cannot be skipped or merged with other questions**. Wait for the user to respond before continuing.
 
 - **Add a little fun**: You can mention you're "putting on your headphones" or "grabbing your coffee" — something light and playful to keep things friendly and fun.
-- **Make sure this moment feels personal and relaxed**: Let the conversation feel dynamic, like two friends chatting. 
+- **Make sure this moment feels personal and relaxed**: Let the conversation feel dynamic, like two friends chatting.
 
 → **MANDATORY: Gather all five essential intro fields at the very beginning.**
 These five are:
@@ -72,6 +73,7 @@ These five are:
 
 You **must** collect all five, one at a time, before moving on.  
 If the user does not answer a question, **always ask again—once, gently** (e.g., "Sorry, I didn't catch your name—could you share it again?").  
+If the user already gave the answer,or gave this information in the past, do not ask again.
 
 → **After each user answer to these intro questions,** always respond with a real, short, human acknowledgment.  
 - Mix it up: use simple affirmations ("Got it!", "Great, thanks!", "Cool, appreciate it!", "Nice!", etc).
@@ -144,9 +146,9 @@ Throughout the interview:
 
 - Examples:
 
-   • "Digital receipts — that’s fascinating. Given the growing emphasis on sustainability, I imagine that must be a big driver in your market?"
+   • "Digital receipts — that's fascinating. Given the growing emphasis on sustainability, I imagine that must be a big driver in your market?"
 
-   • "E-commerce’s pace is crazy these days. How do you keep up with the constant innovation while managing [Project Name]?"
+   • "E-commerce's pace is crazy these days. How do you keep up with the constant innovation while managing [Project Name]?"
 
    • "Project management always involves juggling many moving parts. Did your role require adapting strategies on the fly during this project?"
 
@@ -156,7 +158,7 @@ Throughout the interview:
 
 - Balance your insights carefully — aim to sound curious, informed, and empathetic rather than overly technical or robotic.
 
-- Don’t repeat or summarize user answers; instead, build on them with relevant connections or thoughtful prompts.
+- Don't repeat or summarize user answers; instead, build on them with relevant connections or thoughtful prompts.
 
 - Keep a friendly, warm, and conversational tone throughout.
 
@@ -304,7 +306,7 @@ Create a fully human-feeling interview that captures the user's story in a natur
 
 // Farewell detection setup
 const farewellPhrases = [
-  
+ 
   "goodbye",
   "see you",
   "talk to you later",
@@ -369,6 +371,11 @@ async function endConversation(reason) {
 
       const summaryData = await summaryResponse.json();
       providerSessionId = summaryData.provider_session_id;
+     
+      // Store the case study ID for database operations
+      if (summaryData.case_study_id) {
+        caseStudyId = summaryData.case_study_id;
+      }
 
       // 2. Save transcript with session ID
       const saveRes = await fetch(`/save_transcript?provider_session_id=${providerSessionId}`, {
@@ -382,9 +389,27 @@ async function endConversation(reason) {
 
       if (summaryData.status === "success") {
         showEditableSmartSyncUI(summaryData.text, summaryData.names);
+       
+        // ✅ Automatically generate final story after provider summary is created
+        try {
+          const fullRes = await fetch("/generate_full_case_study", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ case_study_id: summaryData.case_study_id })
+          });
+
+          const fullResData = await fullRes.json();
+          if (fullResData.status === "success") {
+            console.log("✅ Final story automatically generated for provider interview.");
+          } else {
+            console.warn("⚠️ Failed to generate final story:", fullResData.message);
+          }
+        } catch (err) {
+          console.warn("⚠️ Error in automatic final story generation:", err);
+        }
       } else {
         console.error("❌ Failed to generate summary:", summaryData.message);
-      } 
+      }
     } catch (err) {
       console.error("❌ Error during post-end logic:", err);
     }
@@ -466,7 +491,7 @@ function handleMessage(event) {
           modalities: ["audio", "text"],
           input_audio_transcription: { model: "whisper-1" },
           turn_detection: { type: "server_vad" },
-          
+         
         }
       }));
       break;
@@ -605,12 +630,12 @@ function animateBars() {
     console.log("No analyser or bars found, stopping animation");
     return;
   }
-  
+ 
   analyser.getByteFrequencyData(dataArray);
-  
+ 
   // Calculate average volume across frequency bands
   const average = dataArray.reduce((a, b) => a + b) / dataArray.length;
-  
+ 
   // Only animate if there's significant audio activity
   if (average > 5) {
     const now = performance.now();
@@ -674,12 +699,12 @@ startBtn.onclick = async () => {
     return;
   }
   statusEl.textContent = 'Interview starting...';
-  
+ 
   // Resume audio context if it was suspended
   if (audioContext && audioContext.state === 'suspended') {
     await audioContext.resume();
   }
-  
+ 
   await initConnection();
   if (!dataChannel) {
     statusEl.textContent = 'Session is not ready yet. Please wait.';
@@ -761,7 +786,7 @@ async function generateClientInterviewLink(caseStudyId, solutionProvider, client
       clientLinkInput.value = interviewLink;
       document.getElementById("clientLinkContainer").classList.remove("hidden");
 
-      
+     
     } else {
       console.error("Error generating interview link", data.message);
     }
@@ -797,7 +822,7 @@ function beginGreeting() {
     }
   }));
 
-  
+ 
 }
 
 
@@ -821,89 +846,252 @@ function showEditableSmartSyncUI(summaryText, originalNames) {
     document.getElementById('countdown').style.display = 'none';
     document.getElementById('aiAudio').style.display = 'none';
 
-    // Set up the summary textarea
-    const textarea = document.getElementById('editableCaseStudy');
-    textarea.value = summaryText;
-    textarea.readOnly = false;
-
-    // Set up the name input fields
-    const providerInput = document.getElementById('providerNameInput');
-    const clientInput = document.getElementById('clientNameInput');
-    const projectInput = document.getElementById('projectNameInput');
-    providerInput.value = originalNames.lead_entity || '';
-    clientInput.value = originalNames.partner_entity || '';
-    projectInput.value = originalNames.project_title || '';
-
     // Store original names for robust replacement
     const nameMap = {
       'Solution Provider': originalNames.lead_entity || '',
       'Client': originalNames.partner_entity || '',
-      'Project': originalNames.project_title || ''
+      'Project': originalNames.project_title || '',
+      'Interviewee': originalNames.interviewee_name || ''
     };
 
-    // Apply Name Changes logic
-    const applyBtn = document.getElementById('applyNameChangesBtn');
-    applyBtn.onclick = () => {
-      let updatedText = textarea.value;
-      const newNames = {
-        'Solution Provider': providerInput.value.trim(),
-        'Client': clientInput.value.trim(),
-        'Project': projectInput.value.trim()
-      };
-      for (const labelText in nameMap) {
-        const original = nameMap[labelText];
-        const current = newNames[labelText];
-        if (!original || original === current) continue;
-        const variants = [
-          original,
-          `"${original}"`, `'${original}'`,
-          original.toLowerCase(), original.toUpperCase(),
-          original.replace(/' /g, "'"),
-          original + "'s",
-          original + "'s"
-        ];
-        variants.forEach(variant => {
-          const escaped = variant.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-          const regex = new RegExp(`\\b${escaped}\\b`, "gi");
-          updatedText = updatedText.replace(regex, current);
-        });
-        nameMap[labelText] = current;
+    // Convert names to links in the summary
+    function convertNamesToLinks(text) {
+      let htmlText = text;
+     
+      // Replace provider name with better handling of word boundaries
+      if (nameMap['Solution Provider']) {
+        const providerRegex = new RegExp(`\\b${escapeRegExp(nameMap['Solution Provider'])}\\b`, 'g');
+        htmlText = htmlText.replace(providerRegex, `<span class="name-link provider" data-type="provider" contenteditable="true" data-original="${nameMap['Solution Provider']}">${nameMap['Solution Provider']}</span>`);
       }
-      textarea.value = updatedText;
-    };
+     
+      // Replace client name with better handling of word boundaries
+      if (nameMap['Client']) {
+        const clientRegex = new RegExp(`\\b${escapeRegExp(nameMap['Client'])}\\b`, 'g');
+        htmlText = htmlText.replace(clientRegex, `<span class="name-link client" data-type="client" contenteditable="true" data-original="${nameMap['Client']}">${nameMap['Client']}</span>`);
+      }
+     
+      // Replace project name with improved regex to handle spaces and special characters
+      if (nameMap['Project']) {
+        // Create a more flexible regex that can handle spaces and special characters
+        const projectRegex = new RegExp(`${escapeRegExp(nameMap['Project'])}(?![\\w-])`, 'g');
+        htmlText = htmlText.replace(projectRegex, `<span class="name-link project" data-type="project" contenteditable="true" data-original="${nameMap['Project']}">${nameMap['Project']}</span>`);
+      }
 
-    // Save summary button logic
-    const saveBtn = document.getElementById('saveSummaryBtn');
-    saveBtn.onclick = async () => {
-      const summary = textarea.value;
+      // Replace interviewee name
+      if (nameMap['Interviewee']) {
+        const intervieweeRegex = new RegExp(`\\b${escapeRegExp(nameMap['Interviewee'])}\\b`, 'g');
+        htmlText = htmlText.replace(intervieweeRegex, `<span class="name-link interviewee" data-type="interviewee" contenteditable="true" data-original="${nameMap['Interviewee']}">${nameMap['Interviewee']}</span>`);
+      }
+     
+      return htmlText;
+    }
+
+    // Helper function to escape regex special characters with improved handling
+    function escapeRegExp(string) {
+      // First escape all regex special characters
+      const escaped = string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // If the string contains spaces, make the spaces more flexible in matching
+      return escaped.replace(/\s+/g, '\\s+');
+    }
+
+    // Get the rich text display element
+    const richTextDisplay = document.getElementById('richTextDisplay');
+   
+    // Create a hidden textarea for storing the raw text
+    const textarea = document.createElement('textarea');
+    textarea.id = 'editableCaseStudy';
+    textarea.style.display = 'none';
+    textarea.value = summaryText;
+    richTextDisplay.parentNode.appendChild(textarea);
+
+    // Convert the text to HTML with linked names
+    const htmlWithLinks = convertNamesToLinks(summaryText);
+    console.log('📄 Generated HTML:', htmlWithLinks);
+    richTextDisplay.innerHTML = htmlWithLinks;
+   
+    // Add event listeners to name links
+    addNameLinkEventListeners();
+   
+    // Add general input handler for auto-saving
+    richTextDisplay.addEventListener('input', (e) => {
+      // Schedule auto-save for any text changes
+      scheduleAutoSave();
+    });
+   
+    // Make the entire rich text display editable
+    richTextDisplay.contentEditable = true;
+    richTextDisplay.focus();
+
+    // Auto-save functionality
+    let autoSaveTimeout;
+    function scheduleAutoSave() {
+      clearTimeout(autoSaveTimeout);
+      autoSaveTimeout = setTimeout(async () => {
+        await saveSummary();
+      }, 50); // Auto-save after 50ms (very responsive)
+    }
+
+    // Immediate save function for critical changes
+    async function saveImmediately() {
+      clearTimeout(autoSaveTimeout);
+      await saveSummary();
+    }
+
+    async function saveSummary() {
+      try {
+        // Get the current text content
+        const currentText = richTextDisplay.innerText || richTextDisplay.textContent;
+        textarea.value = currentText;
+       
       const res = await fetch('/save_provider_summary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           provider_session_id: providerSessionId,
-          summary: summary
+            summary: currentText
         })
       });
+       
       const result = await res.json();
       if (result.status === 'success') {
-        alert('✅ Summary saved to database.');
-        // Extract updated names from the saved summary
+          console.log('✅ Auto-saved successfully');
+          // Store the case study ID for database operations
+          if (result.case_study_id) {
+            caseStudyId = result.case_study_id;
+          }
+        } else {
+          console.error('❌ Auto-save failed:', result.message);
+        }
+      } catch (err) {
+        console.error('❌ Auto-save error:', err);
+      }
+    }
+
+    // Add event listeners to name links
+    function addNameLinkEventListeners() {
+      const nameLinks = richTextDisplay.querySelectorAll('.name-link');
+      nameLinks.forEach(link => {
+        // Remove previous click listeners
+        link.replaceWith(link.cloneNode(true));
+      });
+      // Re-query after cloneNode
+      const freshLinks = richTextDisplay.querySelectorAll('.name-link');
+      freshLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Prevent multiple edits
+          if (document.querySelector('.name-link.editing')) return;
+          startEditingNameLink(link);
+        });
+      });
+    }
+
+    // Start editing a name link
+    function startEditingNameLink(link) {
+      const type = link.dataset.type;
+      const oldValue = link.textContent;
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = oldValue;
+      input.className = 'name-link-edit-input editing';
+      input.style.minWidth = (oldValue.length + 2) + 'ch';
+      input.setAttribute('data-type', type);
+      input.setAttribute('data-original', link.dataset.original || oldValue);
+      link.replaceWith(input);
+      input.focus();
+      input.select();
+      // On Enter or blur, finish editing
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          finishEditingNameLink(input, type, oldValue);
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          cancelEditingNameLink(input, oldValue);
+        }
+      });
+      input.addEventListener('blur', () => finishEditingNameLink(input, type, oldValue));
+    }
+
+    // Finish editing: update all instances
+    function finishEditingNameLink(input, type, oldValue) {
+      const newValue = input.value.trim();
+      if (!newValue) {
+        cancelEditingNameLink(input, oldValue);
+        return;
+      }
+      // Update all name links of this type
+      const links = richTextDisplay.querySelectorAll(`.name-link[data-type="${type}"]`);
+      links.forEach(link => {
+        link.textContent = newValue;
+        link.dataset.original = newValue;
+      });
+      // Replace the input with a span
+      const newSpan = document.createElement('span');
+      newSpan.className = `name-link ${type}`;
+      newSpan.setAttribute('data-type', type);
+      newSpan.setAttribute('data-original', newValue);
+      newSpan.textContent = newValue;
+      input.replaceWith(newSpan);
+      addNameLinkEventListeners();
+      // Update nameMap
+      const typeMap = {
+        'provider': 'Solution Provider',
+        'client': 'Client',
+        'project': 'Project',
+        'interviewee': 'Interviewee'
+      };
+      const fullType = typeMap[type];
+      if (fullType) nameMap[fullType] = newValue;
+      saveImmediately();
+    }
+
+    // Cancel editing: revert to old value
+    function cancelEditingNameLink(input, oldValue) {
+      const type = input.getAttribute('data-type');
+      const span = document.createElement('span');
+      span.className = `name-link ${type}`;
+      span.setAttribute('data-type', type);
+      span.setAttribute('data-original', oldValue);
+      span.textContent = oldValue;
+      input.replaceWith(span);
+      addNameLinkEventListeners();
+    }
+
+    // Generate client link button logic
+    const generateClientLinkBtn = document.getElementById('generateClientLinkBtn');
+    generateClientLinkBtn.onclick = async () => {
+      try {
+        // First save the current summary
+        await saveImmediately();
+       
+        // Get the current text content
+        const currentText = richTextDisplay.innerText || richTextDisplay.textContent;
+       
+        // Extract updated names from the current summary
         const extractRes = await fetch('/extract_names', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ summary: summary })
+          body: JSON.stringify({ summary: currentText })
         });
+       
         const extractData = await extractRes.json();
         if (extractData.status === 'success') {
-          const { lead_entity, partner_entity, project_title } = extractData.names;
-          await generateClientInterviewLink(result.case_study_id, lead_entity, partner_entity, project_title);
-          // Poll for final summary PDF
-          pollForFinalSummary(result.case_study_id);
+          const { lead_entity, partner_entity, project_title, interviewee_name } = extractData.names;
+         
+          // Generate the client interview link
+          await generateClientInterviewLink(caseStudyId, lead_entity, partner_entity, project_title);
+         
+         
+         
+          alert('✅ Client link generated successfully!');
         } else {
           console.error('❌ Name extraction failed:', extractData.message);
+          alert('❌ Failed to extract names from summary');
         }
-      } else {
-        alert('❌ Failed to save summary: ' + result.message);
+      } catch (err) {
+        console.error('❌ Error generating client link:', err);
+        alert('❌ Failed to generate client link: ' + err.message);
       }
     };
 
@@ -953,6 +1141,10 @@ function showCaseStudyControls() {
     const data = await response.json();
 
     if (data.status === "success") {
+      // Store the case study ID for database operations
+      if (data.case_study_id) {
+        caseStudyId = data.case_study_id;
+      }
       showEditableSmartSyncUI(data.text, data.names); // 👈 use smart replacement
     } else {
       alert("❌ Failed to generate summary: " + data.message);
@@ -988,5 +1180,3 @@ document.getElementById("copyLinkBtn").addEventListener("click", () => {
     button.innerHTML = '<i class="fa fa-copy"></i> Copy';
   }, 2000);
 });
-
-

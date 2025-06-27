@@ -54,20 +54,79 @@ async function fetchProviderTranscript(token) {
     const response = await fetch(`/get_provider_transcript?token=${token}`);
     const data = await response.json();
     if (data.status === "success" && data.transcript) {
-      // Extract the provider's name from the transcript
+      console.log("📄 Provider transcript received, length:", data.transcript.length);
+      
+      // First try LLM extraction for maximum accuracy
+      try {
+        console.log("🤖 Attempting LLM name extraction...");
+        const llmResponse = await fetch('/extract_interviewee_name', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ transcript: data.transcript })
+        });
+        
+        const llmData = await llmResponse.json();
+        console.log("🤖 LLM response:", llmData);
+        
+        if (llmData.status === "success" && llmData.name && llmData.name.trim() !== "") {
+          provider_interviewee_name = llmData.name.trim();
+          console.log("✅ LLM successfully extracted provider name:", provider_interviewee_name);
+          console.log("✅ Method used: LLM (OpenAI)");
+          if (statusEl) {
+            statusEl.innerHTML += `<br><small style="color: #666;">Name extracted via: ${llmData.method || 'Regex'}</small>`;
+          }
+          return;
+        } else {
+          console.warn("⚠️ LLM extraction returned empty or invalid name:", llmData.name);
+          console.log("🔄 Falling back to regex extraction...");
+        }
+      } catch (llmErr) {
+        console.warn("⚠️ LLM extraction failed, falling back to regex:", llmErr);
+      }
+      
+      // Enhanced regex fallback with multiple patterns
+      console.log("🔍 Starting regex name extraction...");
       const lines = data.transcript.split('\n');
+      let regexMethodUsed = null;
+      
       for (const line of lines) {
-        if (line.startsWith('USER:') && line.toLowerCase().includes('my name is')) {
-          const nameMatch = line.match(/my name is ([^,.]+)/i);
+        if (line.startsWith('USER:')) {
+          // Pattern 1: "My name is [name]"
+          let nameMatch = line.match(/my name is ([^,.]+)/i);
           if (nameMatch) {
             provider_interviewee_name = nameMatch[1].trim();
+            regexMethodUsed = "Pattern 1: 'my name is'";
+            break;
+          }
+          
+          // Pattern 2: "I'm [name]" or "I am [name]"
+          nameMatch = line.match(/i'?m ([^,.]+)/i) || line.match(/i am ([^,.]+)/i);
+          if (nameMatch) {
+            provider_interviewee_name = nameMatch[1].trim();
+            regexMethodUsed = "Pattern 2: 'I'm/I am'";
+            break;
+          }
+          
+          // Pattern 3: Just a name after "USER:" (for cases like "USER: Lajda.")
+          nameMatch = line.match(/^USER:\s*([A-Za-z]+)/);
+          if (nameMatch && !line.toLowerCase().includes('work') && !line.toLowerCase().includes('company')) {
+            provider_interviewee_name = nameMatch[1].trim();
+            regexMethodUsed = "Pattern 3: 'USER: [name]'";
             break;
           }
         }
       }
+      
+      if (provider_interviewee_name && provider_interviewee_name.trim() !== "") {
+        console.log("✅ Regex successfully extracted provider name:", provider_interviewee_name);
+        console.log("✅ Method used:", regexMethodUsed);
+      } else {
+        console.warn("⚠️ No name found with any extraction method");
+        console.log("❌ Both LLM and regex extraction failed");
+      }
     }
   } catch (err) {
-    console.error("Failed to fetch provider transcript:", err);
+    console.error("❌ Failed to fetch provider transcript:", err);
   }
 }
 

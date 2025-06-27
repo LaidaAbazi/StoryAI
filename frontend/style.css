@@ -381,3 +381,159 @@ h2 {
   filter: brightness(1.12);
   background-color: #c82333;
 }
+
+/* Name link styles with improved editing experience */
+.name-link {
+  display: inline-block;
+  min-width: 80px;
+  padding: 4px 8px;
+  margin: 0 2px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: #f8f9fa;
+  color: #333;
+  text-decoration: none;
+  cursor: text;
+  transition: all 0.2s ease;
+  position: relative;
+  font-weight: 500;
+}
+
+.name-link:hover {
+  border-color: #dee2e6;
+  background: #e9ecef;
+}
+
+.name-link:focus {
+  outline: none;
+  border-color: #007bff;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Empty state with placeholder */
+.name-link.empty {
+  background: #f8f9fa;
+  border-color: #dee2e6;
+  color: transparent;
+  position: relative;
+}
+
+.name-link.empty::before {
+  content: "Type name...";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  font-style: italic;
+  pointer-events: none;
+  font-weight: normal;
+}
+
+/* Color coding for different name types */
+.name-link.provider {
+  background: #e3f2fd;
+  border-color: #2196f3;
+  color: #1976d2;
+}
+
+.name-link.provider:hover {
+  background: #bbdefb;
+}
+
+.name-link.provider:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.name-link.client {
+  background: #fce4ec;
+  border-color: #e91e63;
+  color: #c2185b;
+}
+
+.name-link.client:hover {
+  background: #f8bbd9;
+}
+
+.name-link.client:focus {
+  border-color: #c2185b;
+  box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+}
+
+.name-link.project {
+  background: #e0f2f1;
+  border-color: #009688;
+  color: #00695c;
+}
+
+.name-link.project:hover {
+  background: #b2dfdb;
+}
+
+.name-link.project:focus {
+  border-color: #00695c;
+  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.1);
+}
+
+.name-link.interviewee {
+  background: #fff3e0;
+  border-color: #ff9800;
+  color: #e65100;
+}
+
+.name-link.interviewee:hover {
+  background: #ffe0b2;
+}
+
+.name-link.interviewee:focus {
+  border-color: #e65100;
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+}
+
+/* Empty state colors for different types */
+.name-link.provider.empty {
+  background: #e3f2fd;
+  border-color: #2196f3;
+}
+
+.name-link.client.empty {
+  background: #fce4ec;
+  border-color: #e91e63;
+}
+
+.name-link.project.empty {
+  background: #e0f2f1;
+  border-color: #009688;
+}
+
+.name-link.interviewee.empty {
+  background: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* Editing state for name-link input */
+.name-link-edit-input.editing {
+  font-size: 1.08em;
+  padding: 4px 12px;
+  border: 2px solid #4e73df;
+  border-radius: 14px;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.12);
+  min-width: 80px;
+  margin: 0 2px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.name-link-edit-input.editing:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.18);
+}
+
+/* Make sure the input doesn't break the line */
+.name-link-edit-input {
+  display: inline-block;
+  vertical-align: middle;
+}

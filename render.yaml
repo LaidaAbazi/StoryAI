@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: storyAI
+    env: python
+    buildCommand: python -m pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
+    startCommand: cd backend && gunicorn server:app --bind 0.0.0.0:$PORT --workers 4 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        fromDatabase:
+          name: storyboomai-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: SECRET_KEY
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: HEYGEN_API_KEY
+        sync: false
+      - key: PICTORY_CLIENT_ID
+        sync: false
+      - key: PICTORY_CLIENT_SECRET
+        sync: false
+      - key: PICTORY_USER_ID
+        sync: false
+      - key: PORT
+        value: 10000
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_APP
+        value: server.py 
